@@ -1,0 +1,52 @@
+# dependencies
+node_modules/
+.npm/
+bower_components/
+vendor/
+.pnp/
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.venv/
+venv/
+env/
+.env/
+*.egg-info/
+.eggs/
+
+# Build output
+dist/
+build/
+.next/
+.nuxt/
+.output/
+.svelte-kit/
+out/
+target/
+*.class
+
+# Logs & temp
+*.log
+*.tmp
+*.swp
+.DS_Store
+Thumbs.db
+
+# Environment (keep secrets out of git)
+.env
+.env.local
+.env.*.local
+
+# ATOA immutable runnable Demo snapshots
+.atoa-demo-history/
+
+# ATOA runtime identity, sessions, task payloads, and audit data
+atoa-data.json
+*.sqlite
+*.sqlite-shm
+*.sqlite-wal
+data/
+
+# Local host-control integrations must never enter a public release

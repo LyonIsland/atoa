@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Sign in to an invited ATOA collaborative coding account.">
+  <title>Sign in · ATOA</title>
+  <link rel="stylesheet" href="/platform-theme.css">
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; min-height: 100vh; }
+    .shell { width: min(1200px, calc(100% - 48px)); margin: 0 auto; }
+    header { display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--line); }
+    .brand { display: flex; align-items: center; color: inherit; text-decoration: none; }
+    .brand strong, .brand small { display: block; }
+    .mark { display: grid; place-items: center; }
+    .auth-console .shell { min-height: 100vh; }
+    .auth-main { display: grid; place-items: start center; padding: 72px 0 80px; }
+    .auth-wrap { width: min(420px, 100%); }
+    .auth-heading { margin-bottom: 22px; text-align: center; }
+    .auth-heading h1 { margin: 0; font-size: 28px; font-weight: 650; letter-spacing: -.035em; }
+    .auth-heading p { margin: 9px auto 0; color: var(--muted); font-size: 11px; line-height: 1.6; }
+    .form-panel { border: 1px solid var(--line); border-radius: 10px; overflow: hidden; background: var(--card); box-shadow: var(--shadow); }
+    .tabs { display: flex; gap: 4px; padding: 10px; border-bottom: 1px solid var(--line); background: var(--inset); }
+    .tab { min-height: 32px; padding: 0 12px; border: 0; border-radius: 6px; color: var(--muted); background: transparent; cursor: pointer; font: inherit; font-size: 11px; font-weight: 650; }
+    .tab:hover { color: var(--ink); background: var(--surface); }
+    .tab.active { color: var(--ink); background: var(--surface); }
+    .form-content { padding: 28px; }
+    .form-content h2 { margin: 0 0 7px; font-size: 22px; font-weight: 650; letter-spacing: -.025em; }
+    .lead { margin: 0 0 24px; color: var(--muted); font-size: 11px; line-height: 1.6; }
+    form { display: grid; gap: 14px; }
+    label { display: grid; gap: 7px; color: var(--ink); font-size: 10px; font-weight: 650; }
+    input { width: 100%; height: 40px; padding: 0 11px; border: 1px solid var(--line); border-radius: 7px; outline: none; color: var(--ink); background: var(--paper); font: inherit; font-size: 12px; }
+    input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(88, 166, 255, .2); }
+    .submit { height: 40px; margin-top: 3px; border: 1px solid var(--control-strong); border-radius: 7px; color: var(--control-strong-ink); background: var(--control-strong); cursor: pointer; font: inherit; font-size: 11px; font-weight: 650; }
+    .submit:hover { background: #ffffff; }
+    .submit:disabled { cursor:wait; opacity:.6; }
+    .message { min-height: 18px; margin: 14px 0 0; color: var(--red); font-size: 10px; line-height: 1.5; }
+    .privacy { margin: 18px 0 0; color: var(--muted); font-size: 9px; line-height: 1.6; text-align: center; }
+    [hidden] { display: none !important; }
+    @media (max-width: 760px) {
+      .auth-console .shell { width: min(100% - 24px, 620px); }
+      .auth-main { padding-top: 48px; }
+      .form-content { padding: 22px; }
+      header { align-items: center; }
+    }
+  </style>
+</head>
+<body class="auth-console">
+  <div class="shell">
+    <header>
+      <a class="brand" href="/login">
+        <span class="mark">A</span>
+        <span><strong>ATOA</strong><small>Collaborative Coding</small></span>
+      </a>
+      <nav class="header-nav" aria-label="Public navigation">
+        <a class="nav-link" href="/philosophy.html">Philosophy</a>
+      </nav>
+    </header>
+
+    <main class="auth-main">
+      <section class="auth-wrap" aria-labelledby="auth-title">
+        <div class="auth-heading">
+          <h1 id="auth-title">Sign in to ATOA</h1>
+          <p>Use your registered account, or create one with an invitation.</p>
+        </div>
+        <section class="form-panel">
+          <div class="tabs" role="tablist" aria-label="Account access">
+            <button class="tab active" id="login-tab" type="button" role="tab" aria-selected="true">Sign in</button>
+            <button class="tab" id="register-tab" type="button" role="tab" aria-selected="false">Register</button>
+          </div>
+
+          <div class="form-content">
+            <div id="login-panel">
+              <h2>Welcome back</h2>
+              <p class="lead">Use an account already registered on this ATOA server.</p>
+              <form id="login-form">
+                <label>Email<input name="email" type="email" autocomplete="username" required></label>
+                <label>Password<input name="password" type="password" autocomplete="current-password" required></label>
+                <button class="submit" type="submit">Sign in</button>
+              </form>
+            </div>
+
+            <div id="register-panel" hidden>
+              <h2>Create an account</h2>
+              <p class="lead">Registration requires an invitation from this deployment.</p>
+              <form id="register-form">
+                <label>Name<input name="name" type="text" autocomplete="name" maxlength="80" required></label>
+                <label>Email<input name="email" type="email" autocomplete="username" required></label>
+                <label>Password<input name="password" type="password" autocomplete="new-password" minlength="12" required></label>
+                <label>Invitation code<input name="invite_code" type="password" autocomplete="off" required></label>
+                <button class="submit" type="submit">Register and sign in</button>
+              </form>
+            </div>
+            <p class="message" id="message" role="status" aria-live="polite"></p>
+          </div>
+        </section>
+        <p class="privacy">Your session is securely stored in an HttpOnly cookie.</p>
+      </section>
+    </main>
+  </div>
+  <script>
+    const loginPanel = document.getElementById('login-panel');
+    const registerPanel = document.getElementById('register-panel');
+    const message = document.getElementById('message');
+    const safeNext = (() => {
+      const value = new URLSearchParams(location.search).get('next') || '/';
+      return value.startsWith('/') && !value.startsWith('//') ? value : '/';
+    })();
+
+    function select(mode) {
+      const login = mode === 'login';
+      loginPanel.hidden = !login;
+      registerPanel.hidden = login;
+      document.getElementById('login-tab').classList.toggle('active', login);
+      document.getElementById('register-tab').classList.toggle('active', !login);
+      document.getElementById('login-tab').setAttribute('aria-selected', String(login));
+      document.getElementById('register-tab').setAttribute('aria-selected', String(!login));
+      message.textContent = '';
+    }
+
+    async function api(route, body) {
+      const response = await fetch(route, {
+        method: 'POST',
+        credentials: 'same-origin',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(data.error || 'request_failed');
+      return data;
+    }
+
+    async function signIn(email, password) {
+      await api('/api/v1/auth/login', { email, password, browser_session: true });
+      location.assign(safeNext);
+    }
+
+    document.getElementById('login-tab').addEventListener('click', () => select('login'));
+    document.getElementById('register-tab').addEventListener('click', () => select('register'));
+    document.getElementById('login-form').addEventListener('submit', async event => {
+      event.preventDefault();
+      const button = event.currentTarget.querySelector('button');
+      const values = Object.fromEntries(new FormData(event.currentTarget));
+      button.disabled = true;
+      message.textContent = 'Signing in…';
+      try { await signIn(values.email, values.password); }
+      catch (error) { message.textContent = error.message === 'invalid_email_or_password' ? 'Email or password is incorrect.' : `Sign in failed: ${error.message}`; button.disabled = false; }
+    });
+    document.getElementById('register-form').addEventListener('submit', async event => {
+      event.preventDefault();
+      const button = event.currentTarget.querySelector('button');
+      const values = Object.fromEntries(new FormData(event.currentTarget));
+      button.disabled = true;
+      message.textContent = 'Creating account…';
+      try {
+        await api('/api/v1/auth/register', values);
+        await signIn(values.email, values.password);
+      } catch (error) {
+        const labels = {
+          valid_invite_code_required: 'The invitation code is invalid.',
+          account_already_registered: 'This email is already registered. Please sign in.',
+          strong_password_required: 'Use at least 12 characters with both letters and numbers.'
+        };
+        message.textContent = labels[error.message] || `Registration failed: ${error.message}`;
+        button.disabled = false;
+      }
+    });
+
+    fetch('/api/v1/agents/me', { credentials: 'same-origin' }).then(response => {
+      if (response.ok) location.replace(safeNext);
+    }).catch(() => {});
+  </script>
+</body>
+</html>

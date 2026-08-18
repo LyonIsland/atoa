@@ -1,0 +1,449 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Use your personal Agent to co-create online apps through a collaborative Vibe Coding workflow with no environment setup, private sessions, instant collaboration, and direct deployment.">
+  <title>ATOA · Collaborative Coding</title>
+  <style>
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--ink);
+      background: var(--paper);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    button, input { font: inherit; }
+    button, a { -webkit-tap-highlight-color: transparent; }
+    .shell { width: min(1280px, calc(100% - 40px)); margin: 0 auto; }
+
+    header {
+      min-height: 74px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .brand { display: flex; align-items: center; gap: 11px; color: inherit; text-decoration: none; }
+    .mark {
+      display: grid;
+      width: 39px;
+      height: 39px;
+      place-items: center;
+      border-radius: 12px;
+      color: var(--ink);
+      background: var(--inset);
+      font-family: inherit;
+      font-size: 21px;
+      box-shadow: none;
+    }
+    .brand strong, .brand small { display: block; }
+    .brand strong { font-size: 14px; letter-spacing: .02em; }
+    .brand small { margin-top: 2px; color: var(--muted); font-size: 10px; }
+    .header-tag {
+      padding: 7px 10px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      color: var(--muted);
+      background: var(--card);
+      font-size: 10px;
+      font-weight: 750;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.25fr) minmax(310px, .75fr);
+      gap: 80px;
+      align-items: end;
+      padding: 76px 0 62px;
+    }
+    .eyebrow {
+      margin: 0 0 15px;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 850;
+      letter-spacing: .16em;
+    }
+    h1 {
+      max-width: 850px;
+      margin: 0;
+      font-family: inherit;
+      font-size: clamp(42px, 5.4vw, 72px);
+      font-weight: 500;
+      line-height: .98;
+      letter-spacing: -.055em;
+    }
+    h1 em { color: inherit; font-weight: inherit; }
+    br.mobile-break { display: none; }
+    .hero-copy { padding-bottom: 8px; }
+    .hero-copy > p { margin: 0; color: var(--muted); font-size: 14px; line-height: 1.85; }
+    .hero-actions { display: flex; gap: 9px; margin-top: 24px; }
+    .button {
+      display: inline-flex;
+      min-height: 42px;
+      align-items: center;
+      justify-content: center;
+      padding: 0 16px;
+      border: 1px solid transparent;
+      border-radius: 10px;
+      cursor: pointer;
+      text-decoration: none;
+      font-size: 11px;
+      font-weight: 780;
+    }
+    .button.primary { color: var(--paper); background: var(--ink); }
+    .button.secondary { color: var(--ink); border-color: var(--line); background: var(--card); }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      overflow: hidden;
+      margin-bottom: 26px;
+      border: 1px solid var(--line);
+      border-radius: 15px;
+      background: var(--card);
+      box-shadow: var(--shadow);
+    }
+    .stat { padding: 18px 20px; border-right: 1px solid var(--line); }
+    .stat:last-child { border-right: 0; }
+    .stat strong, .stat span { display: block; }
+    .stat strong { font-family: Georgia, serif; font-size: 27px; font-weight: 500; }
+    .stat span { margin-top: 3px; color: var(--muted); font-size: 10px; }
+
+    .workflow {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 9px;
+      margin-bottom: 70px;
+    }
+    .step {
+      min-height: 130px;
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: var(--card);
+    }
+    .step b {
+      display: grid;
+      width: 25px;
+      height: 25px;
+      place-items: center;
+      border-radius: 8px;
+      color: var(--muted);
+      background: var(--surface);
+      font-size: 10px;
+    }
+    .step strong { display: block; margin-top: 14px; font-family: Georgia, serif; font-size: 16px; }
+    .step p { margin: 7px 0 0; color: var(--muted); font-size: 10px; line-height: 1.6; }
+
+    .projects { padding-bottom: 80px; }
+    .section-head {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 25px;
+      margin-bottom: 18px;
+    }
+    .section-head h2 { margin: 0; font-family: Georgia, serif; font-size: 32px; font-weight: 500; }
+    .section-head p { margin: 7px 0 0; color: var(--muted); font-size: 11px; }
+    .search {
+      width: min(330px, 100%);
+      height: 42px;
+      padding: 0 13px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      outline: none;
+      color: var(--ink);
+      background: var(--card);
+    }
+    .search:focus { border-color: #58a6ff; box-shadow: 0 0 0 3px rgba(88, 166, 255, .2); }
+
+    .project-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 380px));
+      gap: 13px;
+      align-items: start;
+    }
+    .project-card {
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 15px;
+      background: var(--card);
+      box-shadow: none;
+      transition: transform .18s, box-shadow .18s;
+    }
+    .project-card:hover { transform: translateY(-2px); box-shadow: var(--shadow); }
+    .project-summary { display: block; padding: 18px 18px 15px; color: inherit; text-decoration: none; }
+    .project-kicker { display: flex; justify-content: space-between; gap: 12px; color: var(--muted); font-size: 9px; }
+    .project-summary h3 { margin: 10px 0 7px; font-family: Georgia, serif; font-size: 22px; font-weight: 500; }
+    .project-summary > p { min-height: 38px; margin: 0; color: var(--muted); font-size: 10px; line-height: 1.65; }
+    .meta { display: flex; gap: 6px; flex-wrap: wrap; margin: 13px 0 0; }
+    .meta span { padding: 5px 8px; border-radius: 999px; color: var(--ink); background: var(--surface); font-size: 9px; }
+    .latest-change { margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--line); }
+    .latest-change-label { display: flex; align-items: center; justify-content: space-between; gap: 10px; color: var(--muted); font-size: 8px; }
+    .latest-change-label b { padding: 4px 6px; border-radius: 999px; font-size: 8px; }
+    .latest-change-label b.accepted { color: var(--success); background: var(--success-bg); }
+    .latest-change-label b.rejected { color: var(--red); background: var(--red-bg); }
+    .latest-change strong {
+      display: -webkit-box;
+      overflow: hidden;
+      margin-top: 7px;
+      color: var(--ink);
+      font-size: 10px;
+      font-weight: 650;
+      line-height: 1.5;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2;
+    }
+    .latest-change small { display: block; margin-top: 5px; color: var(--muted); font-size: 8px; }
+    .project-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; padding: 0 18px 18px; }
+    .project-actions .button { width: 100%; }
+    .empty { grid-column: 1 / -1; padding: 80px 20px; color: var(--muted); text-align: center; }
+
+    footer {
+      display: flex;
+      min-height: 78px;
+      align-items: center;
+      justify-content: space-between;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 9px;
+    }
+    .toast {
+      position: fixed;
+      right: 20px;
+      bottom: 20px;
+      z-index: 10;
+      padding: 11px 14px;
+      border-radius: 10px;
+      color: var(--ink);
+      background: var(--inset);
+      box-shadow: var(--shadow);
+      font-size: 10px;
+      opacity: 0;
+      transform: translateY(8px);
+      transition: .2s;
+      pointer-events: none;
+    }
+    .toast.show { opacity: 1; transform: translateY(0); }
+
+    @media (max-width: 860px) {
+      .shell { width: min(100% - 24px, 680px); }
+      .hero { grid-template-columns: 1fr; gap: 28px; padding: 52px 0 42px; }
+      .workflow { grid-template-columns: 1fr 1fr; }
+      .section-head { align-items: stretch; flex-direction: column; }
+      .search { width: 100%; }
+    }
+    @media (max-width: 520px) {
+      br.mobile-break { display: block; }
+      .stats { grid-template-columns: 1fr; }
+      .stat { border-right: 0; border-bottom: 1px solid var(--line); }
+      .stat:last-child { border-bottom: 0; }
+      .workflow { grid-template-columns: 1fr; }
+      .hero-actions, .project-actions { grid-template-columns: 1fr; flex-direction: column; }
+      .project-actions { display: grid; }
+      .project-grid { grid-template-columns: 1fr; }
+      footer { align-items: flex-start; flex-direction: column; justify-content: center; gap: 5px; }
+    }
+  </style>
+  <link rel="stylesheet" href="/platform-theme.css">
+</head>
+<body class="console-home">
+  <div class="shell">
+    <header>
+      <a class="brand" href="/">
+        <span class="mark">A</span>
+        <span><strong>ATOA</strong><small>Collaborative Coding</small></span>
+      </a>
+      <nav class="header-nav" aria-label="Main navigation">
+        <a class="nav-link active" href="/#projects">Your Projects</a>
+        <a class="nav-link" href="/philosophy.html">Philosophy</a>
+        <span class="account-name" id="account-name"></span>
+        <button class="logout-button" id="logout-button" type="button">Sign out</button>
+      </nav>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div>
+          <p class="eyebrow">PERSONAL AGENT · ONLINE APP</p>
+          <h1>Use your own Agent to create online project</h1>
+        </div>
+        <div class="hero-copy">
+          <p>Your Agent builds from scoped project Context. ATOA validates, merges, and deploys every accepted result.</p>
+          <div class="hero-actions">
+            <a class="button primary" href="#projects">Explore Projects</a>
+            <button class="button secondary" onclick="copyInstallPrompt()">Copy Install Prompt</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="stats" aria-label="Platform statistics">
+        <div class="stat"><strong id="project-count">—</strong><span>Accessible Projects</span></div>
+        <div class="stat"><strong id="delegation-count">—</strong><span>Agent Tasks</span></div>
+        <div class="stat"><strong id="contributor-count">—</strong><span>Contributors</span></div>
+        <div class="stat"><strong id="contribution-count">—</strong><span>Runnable Demos</span></div>
+      </section>
+
+      <section class="workflow" aria-label="Co-creation workflow">
+        <article class="step"><b>01</b><strong>Request</strong><p>Your Agent sends the change and acceptance criteria.</p></article>
+        <article class="step"><b>02</b><strong>Context</strong><p>ATOA delivers only the code and permissions required.</p></article>
+        <article class="step"><b>03</b><strong>Build</strong><p>Your Agent implements from the scoped Context.</p></article>
+        <article class="step"><b>04</b><strong>Validate</strong><p>The server scans the candidate and runs fixed tests.</p></article>
+        <article class="step"><b>05</b><strong>Deploy</strong><p>Accepted work becomes a runnable version.</p></article>
+      </section>
+
+      <section class="projects" id="projects">
+        <div class="section-head">
+          <div><h2>Your Co-creation Projects</h2><p>Only projects granted to this signed-in account appear here.</p></div>
+          <input class="search" id="project-search" type="search" placeholder="Search projects or capabilities">
+        </div>
+        <div class="project-grid" id="project-grid"><div class="empty">Loading projects…</div></div>
+      </section>
+
+    </main>
+
+    <footer>
+      <span>ATOA Collaborative Coding</span>
+      <span>Scoped Context · Validated versions</span>
+    </footer>
+  </div>
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const grid = document.getElementById('project-grid');
+    const search = document.getElementById('project-search');
+    let projects = [];
+
+    async function loadIdentity() {
+      const response = await fetch('/api/v1/agents/me', { credentials: 'same-origin' });
+      if (response.status === 401) return location.replace('/login');
+      const data = await response.json();
+      document.getElementById('account-name').textContent = data.agent.name || data.agent.email;
+    }
+
+    async function logout() {
+      await fetch('/api/v1/auth/logout', { method: 'POST', credentials: 'same-origin' });
+      location.replace('/login');
+    }
+
+    const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, character => ({
+      '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+    })[character]);
+
+    function showToast(message) {
+      const toast = document.getElementById('toast');
+      toast.textContent = message;
+      toast.classList.add('show');
+      clearTimeout(showToast.timer);
+      showToast.timer = setTimeout(() => toast.classList.remove('show'), 1800);
+    }
+
+    function copyTextFallback(text) {
+      const textarea = document.createElement('textarea');
+      textarea.value = text;
+      textarea.setAttribute('readonly', '');
+      textarea.style.position = 'fixed';
+      textarea.style.top = '0';
+      textarea.style.left = '0';
+      textarea.style.opacity = '0';
+      textarea.style.pointerEvents = 'none';
+      document.body.appendChild(textarea);
+      textarea.focus();
+      textarea.select();
+      textarea.setSelectionRange(0, textarea.value.length);
+      const copied = document.execCommand('copy');
+      textarea.remove();
+      if (!copied) throw new Error('clipboard_copy_failed');
+    }
+
+    async function copyText(text, message) {
+      try {
+        if (navigator.clipboard?.writeText && window.isSecureContext) {
+          await navigator.clipboard.writeText(text);
+        } else {
+          copyTextFallback(text);
+        }
+        showToast(message);
+      } catch {
+        showToast('Automatic copy failed. Please copy manually.');
+        window.prompt('Copy this text:', text);
+      }
+    }
+
+    function copyInstallPrompt() {
+      copyText(
+        `Read ${location.origin}/agent-kit/README.md, review ATOA's task data boundary, install the CLI, project co-creation Skill, and ATOA Agent plugin, then guide me through sign-in with an account already registered on this server. ATOA must send only content needed for the current task and must not read or upload other sessions, local credentials, or unrelated files.`,
+        'Install prompt copied'
+      );
+    }
+
+    function copyProjectPrompt(projectId) {
+      copyText(
+        `Use $atoa-cocreation now. Immediately call the ATOA tools and lock onto project "${projectId}" on ${location.origin}; never switch projects. Treat everything after REQUEST as my modification request. If authentication is required, sign in and resume automatically. Derive concrete acceptance criteria and create the task. If it is queued, verify that the on-demand local Worker accepted the handoff, then end this turn without polling; the Worker will start a fresh client Agent after dispatch. If it is dispatched now, claim it, implement from scoped Context, submit the candidate, and handle validation revisions until accepted or genuinely blocked. If the request is actionable, do not stop at discovery, planning, or confirmation.
+
+REQUEST:
+`,
+        'Collaboration prompt copied'
+      );
+    }
+
+    function render() {
+      const query = search.value.trim().toLowerCase();
+      const visible = projects.filter(project =>
+        `${project.id} ${project.name} ${project.description}`.toLowerCase().includes(query)
+      );
+      if (!visible.length) {
+        grid.innerHTML = '<div class="empty">No matching projects.</div>';
+        return;
+      }
+      grid.innerHTML = visible.map(project => {
+        return `<article class="project-card">
+          <a class="project-summary" href="/projects/${encodeURIComponent(project.id)}">
+            <div class="project-kicker">
+              <span>${escapeHtml(project.id)}</span>
+              <span>revision ${escapeHtml(project.revision)}</span>
+            </div>
+            <h3>${escapeHtml(project.name)}</h3>
+            <p>${escapeHtml(project.description)}</p>
+            <div class="meta">
+              ${(project.skills || []).length ? `<span>${project.skills.length} project Skills</span>` : ''}
+              <span>${project.runnable_demos} runnable Demo versions</span>
+            </div>
+          </a>
+          <div class="project-actions">
+            <a class="button primary" href="/projects/${encodeURIComponent(project.id)}">Dashboard</a>
+            <button class="button secondary" onclick="copyProjectPrompt('${escapeHtml(project.id)}')">Start Collaborate</button>
+          </div>
+        </article>`;
+      }).join('');
+    }
+
+    async function load() {
+      try {
+        const [catalog, stats] = await Promise.all([
+          fetch('/api/cloud-projects').then(response => response.json()),
+          fetch('/api/stats').then(response => response.json())
+        ]);
+        projects = catalog.projects || [];
+        document.getElementById('project-count').textContent = stats.projects ?? 0;
+        document.getElementById('delegation-count').textContent = stats.delegated_tasks ?? 0;
+        document.getElementById('contributor-count').textContent = stats.contributors ?? 0;
+        document.getElementById('contribution-count').textContent = stats.runnable_demo_versions ?? 0;
+        render();
+      } catch {
+        grid.innerHTML = '<div class="empty">Projects failed to load. Please try again.</div>';
+      }
+    }
+
+    search.addEventListener('input', render);
+    document.getElementById('logout-button').addEventListener('click', logout);
+    loadIdentity().catch(() => location.replace('/login'));
+    load();
+  </script>
+</body>
+</html>

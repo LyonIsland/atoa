@@ -1,0 +1,7 @@
+{
+  "version": "2.3.0",
+  "files": [
+    "atoa-cocreation/SKILL.md",
+    "atoa-cocreation/agents/openai.yaml"
+  ]
+}

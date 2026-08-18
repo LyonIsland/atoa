@@ -1,0 +1,13 @@
+{
+  "name": "@atoa-network/agent-kit",
+  "version": "2.3.0",
+  "description": "ATOA server control-plane delegation CLI, Skill and Codex plugin",
+  "type": "module",
+  "bin": {
+    "atoa": "./cli/atoa.mjs"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "license": "MIT"
+}

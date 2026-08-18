@@ -1,0 +1,20 @@
+{
+  "name": "atoa-collaborative-coding",
+  "version": "2.3.0",
+  "description": "Distributed project co-creation platform coordinating client coding Agents through a deterministic server control plane",
+  "main": "server.js",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "start": "node server.js",
+    "test": "node --test cloud-projects/courseplanner/tests/app.test.js tests/sqlite-store.test.mjs tests/cloud-protocol.test.mjs",
+    "check:release": "node scripts/check-public-release.mjs",
+    "verify": "node --check server.js && npm test && npm run check:release"
+  },
+  "dependencies": {
+    "better-sqlite3": "^12.10.0",
+    "cors": "^2.8.6",
+    "express": "^4.22.2"
+  }
+}

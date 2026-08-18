@@ -1,0 +1,20 @@
+{
+  "name": "atoa-agent-kit",
+  "interface": {
+    "displayName": "ATOA Agent Kit"
+  },
+  "plugins": [
+    {
+      "name": "atoa-codex",
+      "source": {
+        "source": "local",
+        "path": "./plugins/atoa-codex"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    }
+  ]
+}

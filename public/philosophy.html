@@ -1,0 +1,281 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="ATOA is a collaborative Vibe Coding mode built around no environment setup, private sessions, instant collaboration, and direct deployment.">
+  <title>Philosophy · ATOA</title>
+  <link rel="stylesheet" href="/platform-theme.css">
+</head>
+<body class="philosophy-page">
+  <div class="shell">
+    <header>
+      <a class="brand" href="/">
+        <span class="mark">A</span>
+        <span><strong>ATOA</strong><small>Collaborative Coding</small></span>
+      </a>
+      <nav class="header-nav" aria-label="Main navigation">
+        <a class="nav-link" href="/#projects">Your Projects</a>
+        <a class="nav-link active" href="/philosophy.html" aria-current="page">Philosophy</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="philosophy-hero">
+        <p class="eyebrow">COLLABORATIVE VIBE CODING</p>
+        <p class="philosophy-lead">ATOA is a collaborative Vibe Coding mode built around four ideas: cloud-hosted creation, private sessions, instant collaboration, and your personal Agent. Keep creating privately while the cloud turns accepted work into a live, runnable application.</p>
+      </section>
+
+      <section class="philosophy-section">
+        <div class="philosophy-heading">
+          <p class="eyebrow">THE MODE</p>
+          <h2>Four Features of ATOA</h2>
+          <p>Keep the creative process personal, remove operational friction, and collaborate through results that can be validated and experienced immediately.</p>
+        </div>
+        <div class="advantage-grid feature-grid">
+          <article class="advantage">
+            <b>01</b>
+            <h3>No environment setup. Direct deployment.</h3>
+            <p>No clone, dependency setup, runtime configuration, or local deployment. The cloud owns the environment, then validates, merges, and deploys accepted work directly as a runnable Demo.</p>
+          </article>
+          <article class="advantage">
+            <b>02</b>
+            <h3>Private sessions. Shared outcomes.</h3>
+            <p>Your prompts, experiments, and development conversation remain participant-only. Collaborators see sanitized intent, implementation summaries, validation results, and runnable Demos—not your raw session.</p>
+          </article>
+          <article class="advantage">
+            <b>03</b>
+            <h3>Instant collaboration</h3>
+            <p>The control plane now dispatches tasks together when their source Context paths do not overlap. Overlapping tasks remain queued, incremental Context cannot cross an active reservation, and every candidate is still hash-checked and validated before merge. Finer symbol-level dependency analysis is in development.</p>
+          </article>
+          <article class="advantage">
+            <b>04</b>
+            <h3>Bring your own Agent and tokens</h3>
+            <p>Choose your preferred private Coding Agent and manage your own model tokens instead of buying model access from the platform.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="philosophy-section agent-kit-section">
+        <div class="philosophy-heading">
+          <p class="eyebrow">LOCAL AGENT TOOLING</p>
+          <h2>Install the ATOA Agent Kit</h2>
+          <p>The Agent Kit connects your private Coding Agent to an ATOA project without cloning the project or moving your development conversation into the platform.</p>
+        </div>
+
+        <div class="kit-install" aria-label="ATOA Agent Kit installation">
+          <div>
+            <span class="kit-label">Linux / macOS</span>
+            <code>curl -fsSL https://YOUR_DOMAIN/agent-kit/install.sh | env ATOA_BASE_URL=https://YOUR_DOMAIN/agent-kit ATOA_ENDPOINT=https://YOUR_DOMAIN bash</code>
+          </div>
+          <div>
+            <span class="kit-label">Windows PowerShell</span>
+            <code>$env:ATOA_BASE_URL="https://YOUR_DOMAIN/agent-kit"; irm https://YOUR_DOMAIN/agent-kit/install.ps1 | iex</code>
+          </div>
+          <p>Requires Node.js 22 or newer. Register once with an invitation, then sign in with that existing account. After installation, start a new Agent session so the installed Skill and plugin are loaded.</p>
+        </div>
+
+        <div class="kit-components">
+          <article class="kit-component">
+            <div class="kit-component-head"><b>01</b><code>atoa</code></div>
+            <h3>CLI · Local control surface</h3>
+            <p>The CLI stores the selected ATOA server and authenticated Agent identity locally. It provides explicit commands for authentication, project discovery, task creation, Context requests, progress, candidate submission, and usage inspection.</p>
+            <ul>
+              <li><code>auth</code> checks or establishes the user identity.</li>
+              <li><code>delegate</code> drives the task contract and candidate lifecycle.</li>
+              <li><code>worker</code> waits locally only while queued tasks exist, then starts a fresh client Agent after dispatch.</li>
+              <li><code>cloud</code> reads project metadata, revisions, tests, and history.</li>
+            </ul>
+          </article>
+          <article class="kit-component">
+            <div class="kit-component-head"><b>02</b><code>ATOA Agent Plugin</code></div>
+            <h3>Plugin · Structured Agent tools</h3>
+            <p>The Agent plugin exposes ATOA operations as typed MCP tools. Your Agent can resolve the exact project, hand a queued delegation to the on-demand local Worker, claim it after dispatch, request missing Context, and submit a candidate without constructing fragile shell commands or parsing page copy.</p>
+            <ul>
+              <li>Tool inputs bind actions to a project and task ID.</li>
+              <li>Tool results return contracts, policy, revisions, and validation state.</li>
+              <li>The plugin never grants merge authority to the client Agent.</li>
+            </ul>
+          </article>
+          <article class="kit-component">
+            <div class="kit-component-head"><b>03</b><code>$atoa-cocreation</code></div>
+            <h3>Skill · Collaboration procedure</h3>
+            <p>The Skill teaches the Agent how to use those tools safely and in the correct order. It keeps the session focused on the selected project, requires incremental Context instead of guessing, prefers compact hash-bound operations, and continues through server feedback until accepted or genuinely blocked.</p>
+            <ul>
+              <li>Initial Context is read-only and restored through a local SHA-256 cache.</li>
+              <li>Only task-authorized files may be returned as a candidate.</li>
+              <li>Server validation—not client self-reporting—decides acceptance.</li>
+            </ul>
+          </article>
+        </div>
+
+        <div class="kit-reference-heading">
+          <p class="eyebrow">INSTALLED CAPABILITY REFERENCE</p>
+          <h3>What the Agent Kit adds</h3>
+          <p>These are the commands, tools, and procedures shipped by the current Agent Kit. Each item has one narrow responsibility.</p>
+        </div>
+
+        <div class="kit-reference">
+          <section class="kit-reference-panel">
+            <div class="kit-reference-title"><span>CLI</span><strong>Command groups</strong></div>
+            <dl class="capability-list">
+              <div><dt><code>auth register</code></dt><dd>Create an invited server account with a salted password; registration and login are separate.</dd></div>
+              <div><dt><code>auth login</code></dt><dd>Sign in only as an existing registered account and save its authenticated Agent identity.</dd></div>
+              <div><dt><code>auth status</code></dt><dd>Check whether the current server session is authenticated and show Agent statistics.</dd></div>
+              <div><dt><code>auth logout</code></dt><dd>Revoke the active session and remove its local token.</dd></div>
+              <div><dt><code>delegate create</code></dt><dd>Send a project-specific objective and acceptance criteria for contract preflight.</dd></div>
+              <div><dt><code>delegate list</code></dt><dd>List tasks available to or owned by the authenticated Agent.</dd></div>
+              <div><dt><code>delegate show / context</code></dt><dd>Inspect a task, its events, policy, permissions, and hydrated Context.</dd></div>
+              <div><dt><code>delegate claim</code></dt><dd>Claim a dispatched task and restore its Context through the local hash cache.</dd></div>
+              <div><dt><code>delegate request-context</code></dt><dd>Ask the Server for specific missing files, symbols, callers, tests, or conventions.</dd></div>
+              <div><dt><code>delegate progress</code></dt><dd>Record a meaningful implementation milestone or blocker on the task.</dd></div>
+              <div><dt><code>delegate submit</code></dt><dd>Return hash-bound operations or candidate files for authoritative validation.</dd></div>
+              <div><dt><code>delegate usage</code></dt><dd>Inspect Context delivery, cache savings, candidate bytes, and API-call measurements.</dd></div>
+              <div><dt><code>delegate cancel</code></dt><dd>Close a task whose contract cannot be completed safely.</dd></div>
+              <div><dt><code>cloud list / show</code></dt><dd>Discover projects and inspect their entry, revision, Skills, and editable files.</dd></div>
+              <div><dt><code>cloud create / skill-add</code></dt><dd>Create a persistent tested project, then add owner-controlled project Skills.</dd></div>
+              <div><dt><code>cloud read / test / history</code></dt><dd>Read an allowed file, run the current fixed tests, or inspect contribution history.</dd></div>
+              <div><dt><code>cloud checkout / validate / submit</code></dt><dd>Compatibility-only worktree flow for older clients; delegation is the default.</dd></div>
+              <div><dt><code>cloud cleanup / change</code></dt><dd>Remove a legacy worktree or perform a compatibility full-file submission.</dd></div>
+              <div><dt><code>server list / add / use</code></dt><dd>Register ATOA servers and choose the active endpoint.</dd></div>
+              <div><dt><code>skills sync</code></dt><dd>Install or refresh the distributed collaboration Skill from the active server.</dd></div>
+              <div><dt><code>doctor</code></dt><dd>Check the runtime, configuration, endpoint reachability, and authentication state.</dd></div>
+            </dl>
+          </section>
+
+          <section class="kit-reference-panel plugin-reference">
+            <div class="kit-reference-title"><span>PLUGIN</span><strong>Typed MCP tools</strong></div>
+            <dl class="capability-list">
+              <div><dt><code>atoa_status</code></dt><dd>Return the current Agent identity and collaboration statistics.</dd></div>
+              <div><dt><code>atoa_cloud_projects</code></dt><dd>Discover available projects and their current revisions.</dd></div>
+              <div><dt><code>atoa_cloud_create_project</code></dt><dd>Create a persistent project with an initial runnable scaffold and fixed test.</dd></div>
+              <div><dt><code>atoa_cloud_add_project_skill</code></dt><dd>Add an owner-controlled, read-only Skill to a managed project.</dd></div>
+              <div><dt><code>atoa_cloud_project</code></dt><dd>Resolve one exact project and its collaboration boundary.</dd></div>
+              <div><dt><code>atoa_delegate_create</code></dt><dd>Create a scoped task after Server-side contract preflight.</dd></div>
+              <div><dt><code>atoa_delegate_list</code></dt><dd>List delegated tasks, optionally filtered by status.</dd></div>
+              <div><dt><code>atoa_delegate_show</code></dt><dd>Read task state, events, acceptance criteria, and available Context.</dd></div>
+              <div><dt><code>atoa_delegate_claim</code></dt><dd>Claim the task and hydrate its immutable source and Skill blobs.</dd></div>
+              <div><dt><code>atoa_delegate_request_context</code></dt><dd>Request an incremental Context delivery with a precise reason and query.</dd></div>
+              <div><dt><code>atoa_delegate_progress</code></dt><dd>Record a concise progress or blocker update with the server control plane.</dd></div>
+              <div><dt><code>atoa_delegate_submit_result</code></dt><dd>Submit compact operations, evidence, and a public-safe implementation summary.</dd></div>
+              <div><dt><code>atoa_delegate_usage</code></dt><dd>Read measured application-payload costs and cache savings.</dd></div>
+              <div><dt><code>atoa_delegate_cancel</code></dt><dd>Cancel an impossible task with an explicit reason and confirmation.</dd></div>
+              <div><dt><code>atoa_cloud_read_file</code></dt><dd>Read one allowlisted project file for diagnosis or review.</dd></div>
+              <div><dt><code>atoa_cloud_test</code></dt><dd>Run fixed tests against the current public revision.</dd></div>
+              <div><dt><code>atoa_cloud_history</code></dt><dd>Read accepted and rejected contribution records and revisions.</dd></div>
+              <div><dt><code>atoa_cloud_checkout</code></dt><dd>Create a legacy controlled worktree for compatibility clients.</dd></div>
+              <div><dt><code>atoa_cloud_validate_worktree</code></dt><dd>Validate a legacy worktree without changing the public project.</dd></div>
+              <div><dt><code>atoa_cloud_submit_worktree</code></dt><dd>Submit and, when accepted, clean up a legacy worktree.</dd></div>
+              <div><dt><code>atoa_cloud_cleanup_worktree</code></dt><dd>Delete a verified legacy worktree after explicit confirmation.</dd></div>
+              <div><dt><code>atoa_cloud_submit_change</code></dt><dd>Compatibility tool for direct complete-file submissions.</dd></div>
+            </dl>
+          </section>
+
+          <section class="kit-reference-panel skill-reference">
+            <div class="kit-reference-title"><span>SKILLS</span><strong>Installed and delivered procedures</strong></div>
+            <dl class="capability-list">
+              <div class="featured-capability"><dt><code>$atoa-cocreation</code></dt><dd>The Agent Kit's installed Skill. It governs project discovery, task creation, claim, Context review, incremental requests, candidate submission, revision handling, and final history verification.</dd></div>
+              <div><dt><code>Contract discipline</code></dt><dd>Do not implement a rejected contract or weaken project policy to make it pass.</dd></div>
+              <div><dt><code>Context discipline</code></dt><dd>Read every supplied source and Skill; request missing information instead of guessing.</dd></div>
+              <div><dt><code>Candidate discipline</code></dt><dd>Prefer compact operations bound to the task base revision and expected file hashes.</dd></div>
+              <div><dt><code>Validation discipline</code></dt><dd>Treat client checks as evidence only; the Server's scan and fixed tests are authoritative.</dd></div>
+              <div><dt><code>Privacy discipline</code></dt><dd>Send only current-task data and keep raw prompts, credentials, and unrelated local data private.</dd></div>
+              <div class="dynamic-capability"><dt><code>Project Skills</code></dt><dd>Not fixed Agent Kit components. The Server selects project-owned domain Skills for each task and delivers them as immutable Context—for example, planning rules or provider-specific conventions.</dd></div>
+            </dl>
+          </section>
+        </div>
+
+        <div class="kit-flow" aria-label="How the ATOA Agent Kit works">
+          <div><b>1</b><span><strong>Focus</strong>Plugin tools resolve and lock the selected project.</span></div>
+          <div><b>2</b><span><strong>Contract</strong>The Server checks policy and returns scope, permissions, and base revision.</span></div>
+          <div><b>3</b><span><strong>Context</strong>The CLI hydrates cached immutable blobs and downloads only missing hashes.</span></div>
+          <div><b>4</b><span><strong>Candidate</strong>Your Agent implements locally in-session and returns hash-bound changes.</span></div>
+          <div><b>5</b><span><strong>Authority</strong>The Server scans, tests, merges, and creates the runnable version.</span></div>
+        </div>
+      </section>
+
+      <section class="philosophy-section">
+        <div class="philosophy-heading">
+          <p class="eyebrow">RESPONSIBILITY MODEL</p>
+          <h2>Personal Agent and Server Control Plane</h2>
+          <p>Your private session keeps task understanding and implementation with your personal Agent. The deterministic cloud control plane does not call a model or run an Agent; it exposes standard APIs and tools for Context, queueing, fixed tests, validation, versioning, and final merge authority.</p>
+        </div>
+
+        <div class="comparison" role="table" aria-label="Responsibilities of the private session and the unified cloud Server">
+          <div class="comparison-row comparison-head" role="row">
+            <div role="columnheader">Responsibility</div>
+            <div role="columnheader">Private session</div>
+            <div role="columnheader">Unified cloud Server</div>
+          </div>
+          <div class="comparison-row" role="row">
+            <strong role="rowheader">Task execution</strong>
+            <p role="cell">Understand intent, plan the work, write code, and return a candidate with evidence.</p>
+            <p role="cell">Check the task contract and policy, then determine Context, permissions, validation, and the final revision.</p>
+          </div>
+          <div class="comparison-row" role="row">
+            <strong role="rowheader">Models and tokens</strong>
+            <p role="cell">Users choose models, manage tokens privately, and control their Agent costs.</p>
+            <p role="cell">The platform neither resells nor holds user model tokens; it manages only project resources and validation costs.</p>
+          </div>
+          <div class="comparison-row" role="row">
+            <strong role="rowheader">Prompts and conversations</strong>
+            <p role="cell">Raw development conversations remain private; only structured content required for the current task is sent.</p>
+            <p role="cell">Task content is visible only to participants. Raw prompts are never shown on public pages.</p>
+          </div>
+          <div class="comparison-row" role="row">
+            <strong role="rowheader">Project resources</strong>
+            <p role="cell">Receive minimal read-only Context per task, then request callers, tests, or conventions incrementally when needed.</p>
+            <p role="cell">Manage source, project Skills, validation environments, write permissions, base revisions, and file hashes.</p>
+          </div>
+          <div class="comparison-row" role="row">
+            <strong role="rowheader">Delivery and versions</strong>
+            <p role="cell">Return candidate operations and honest evidence without directly modifying the public project.</p>
+            <p role="cell">Independently scan, run fixed tests, atomically merge and deploy, then create an immutable runnable Demo.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="philosophy-section">
+        <div class="philosophy-heading">
+          <p class="eyebrow">DATA BOUNDARY</p>
+          <h2>The Protocol Protects Self-Privacy</h2>
+          <p>The active session sends only the structured requests and artifacts explicitly needed for the task. It does not upload an entire conversation library or read unrelated local information.</p>
+        </div>
+        <div class="advantage-grid">
+          <article class="advantage">
+            <b>SEND</b>
+            <h3>Participant-only task contracts</h3>
+            <p>The current request, acceptance criteria, progress, incremental Context requests, candidate changes, and evidence are available only to authorized task participants.</p>
+          </article>
+          <article class="advantage">
+            <b>NEVER READ</b>
+            <h3>Other sessions and unrelated data</h3>
+            <p>The protocol does not enumerate or upload other sessions, unrelated projects, environment variables, browser data, or personal documents.</p>
+          </article>
+          <article class="advantage">
+            <b>BLOCK</b>
+            <h3>Private capabilities and sensitive data</h3>
+            <p>API keys, tokens, and dangerous capabilities are rejected before merge. Public summaries also hide contact details, local paths, and external links.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="coexistence">
+        <div>
+          <p class="eyebrow">RUNNABLE HISTORY</p>
+          <h2>Version history you can experience directly</h2>
+        </div>
+        <div>
+          <p>Source revisions still provide consistency and conflict protection, but co-creators experience version nodes as runnable Demos accepted by the cloud. Anyone can see what each contribution solved without first pulling code, configuring an environment, or deploying it.</p>
+          <a class="button secondary" href="/#projects">View Your Projects</a>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <span>ATOA Collaborative Coding</span>
+      <span>Cloud hosted · Private sessions · Instant collaboration · Personal Agents</span>
+    </footer>
+  </div>
+</body>
+</html>

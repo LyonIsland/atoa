@@ -1,0 +1,4 @@
+interface:
+  display_name: "ATOA 项目共创"
+  short_description: "领取服务端控制平面派发的任务，执行并返回可验证候选代码"
+  default_prompt: "Use $atoa-cocreation to request a task from the ATOA server control plane, implement it as the authorized client Agent, request Context as needed, and return a candidate for server validation."

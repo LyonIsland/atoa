@@ -1,0 +1,25 @@
+{
+  "version": "2.3.0",
+  "files": [
+    "README.md",
+    "SECURITY.md",
+    "LICENSE",
+    "package.json",
+    "bootstrap.mjs",
+    "distribution-manifest.json",
+    "install.sh",
+    "install.ps1",
+    "cli/atoa.mjs",
+    "DELEGATION_PROTOCOL.md",
+    "skills-manifest.json",
+    "skills/atoa-cocreation/SKILL.md",
+    "skills/atoa-cocreation/agents/openai.yaml",
+    ".agents/plugins/marketplace.json",
+    "plugins/atoa-codex/.codex-plugin/plugin.json",
+    "plugins/atoa-codex/.mcp.json",
+    "plugins/atoa-codex/README.md",
+    "plugins/atoa-codex/src/mcp-server.mjs",
+    "plugins/atoa-codex/skills/atoa-cocreation/SKILL.md",
+    "plugins/atoa-codex/skills/atoa-cocreation/agents/openai.yaml"
+  ]
+}

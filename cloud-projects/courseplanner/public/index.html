@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Build a course plan around your interests, schedule, and weekly workload">
+  <title>Student Course Planner</title>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <main class="app-shell">
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Back to ATOA">
+        <span class="brand-mark">C</span>
+        <span><strong>Student Course Planner</strong><small>ATOA Co-creation Project</small></span>
+      </a>
+      <div class="term"><i></i>Fall 2026</div>
+    </header>
+
+    <section class="hero">
+      <div>
+        <p class="eyebrow">COURSE COMPASS</p>
+        <h1>Turn courses you love<br><em>into a schedule that works.</em></h1>
+      </div>
+      <p>Choose your interests and weekly time budget to compare courses, catch schedule conflicts, and build a balanced study plan.</p>
+    </section>
+
+    <section class="workspace">
+      <div class="catalog">
+        <div class="filters">
+          <label class="search">
+            <span>Search</span>
+            <input id="search" type="search" placeholder="Course name, code, or tag">
+          </label>
+          <label>
+            <span>Interest</span>
+            <select id="interest">
+              <option value="">All interests</option>
+              <option value="AI">Artificial Intelligence</option>
+              <option value="HCI">Human–Computer Interaction</option>
+              <option value="Data">Data Science</option>
+              <option value="Design">Design Innovation</option>
+              <option value="Social">Social Science</option>
+            </select>
+          </label>
+          <label>
+            <span>Max workload per course</span>
+            <select id="workload">
+              <option value="12">No limit</option>
+              <option value="5">5 hours/week</option>
+              <option value="7">7 hours/week</option>
+              <option value="9">9 hours/week</option>
+            </select>
+          </label>
+          <label>
+            <span>Maximum difficulty</span>
+            <select id="difficulty">
+              <option value="">Any difficulty</option>
+              <option value="2">Up to 2 — Easy</option>
+              <option value="3">Up to 3 — Moderate</option>
+              <option value="4">Up to 4 — Challenging</option>
+              <option value="5">Up to 5 — Any rated course</option>
+            </select>
+          </label>
+          <label>
+            <span>Sort courses</span>
+            <select id="difficulty-sort">
+              <option value="default">Catalog order</option>
+              <option value="easiest">Difficulty: easiest first</option>
+              <option value="hardest">Difficulty: hardest first</option>
+            </select>
+          </label>
+        </div>
+
+        <div class="section-head">
+          <div><strong>Available Courses</strong><span id="result-count"></span></div>
+          <button id="recommend" class="text-button">Recommend for Me</button>
+        </div>
+        <div id="course-list" class="course-list"></div>
+      </div>
+
+      <aside class="plan">
+        <div class="plan-head">
+          <div><span>MY PLAN</span><h2>Course Plan</h2></div>
+          <strong id="selected-count">0 courses</strong>
+        </div>
+        <div class="metrics">
+          <div><strong id="credits">0</strong><span>Total credits</span></div>
+          <div><strong id="hours">0h</strong><span>Weekly workload</span></div>
+        </div>
+        <div class="planner">
+          <div class="planner-controls">
+            <label><span>Total weekly budget</span><select id="plan-budget"><option value="12">12 hours</option><option value="18" selected>18 hours</option><option value="24">24 hours</option><option value="30">30 hours</option></select></label>
+            <button id="auto-plan" class="planner-button">Build My Schedule</button>
+          </div>
+          <div id="planner-preview" class="planner-preview" hidden></div>
+        </div>
+        <div id="plan-list" class="plan-list"></div>
+        <div id="plan-status" class="plan-status neutral">
+          <span>✓</span>
+          <p><strong>Select your courses</strong><small>Your plan will be analyzed automatically</small></p>
+        </div>
+        <button id="clear-plan" class="clear-button">Clear Plan</button>
+      </aside>
+    </section>
+
+    <section class="schedule-panel" aria-labelledby="schedule-title">
+      <div class="schedule-panel-head">
+        <div><p class="eyebrow">WEEK AT A GLANCE</p><h2 id="schedule-title">Schedule Calendar</h2></div>
+        <p><span class="schedule-legend-dot" aria-hidden="true"></span>Conflicting courses are marked in orange</p>
+      </div>
+      <div class="schedule-scroll" tabindex="0" aria-label="Weekly course schedule. Scroll horizontally on narrow screens.">
+        <div id="schedule-board" class="schedule-board" aria-live="polite"></div>
+      </div>
+    </section>
+
+    <footer>
+      <span>Demo course data · Always confirm with your official course system</span>
+      <span>Keep improving this project with your own Agent</span>
+    </footer>
+  </main>
+  <script type="module" src="./app.js"></script>
+</body>
+</html>

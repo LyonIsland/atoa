@@ -1,0 +1,30 @@
+{
+  "id": "courseplanner",
+  "name": "Student Course Planner",
+  "description": "Filter courses by interest, schedule, and workload, build a study plan, and detect time conflicts automatically.",
+  "visibility": "registered",
+  "entry": "public/index.html",
+  "editable_files": [
+    "public/index.html",
+    "public/styles.css",
+    "public/app.js",
+    "tests/app.test.js"
+  ],
+  "skills": [
+    {
+      "id": "course-planning",
+      "name": "Course Planning",
+      "description": "Course filters, recommendations, workload budgets, credits, and schedule-conflict rules",
+      "file": "skills/course-planning/SKILL.md",
+      "triggers": ["课程", "选课", "推荐", "规划", "兴趣", "时间冲突", "工作量", "预算", "学分"]
+    },
+    {
+      "id": "course-reviews",
+      "name": "Course Reviews",
+      "description": "Rating and review validation, summaries, safe rendering, and project-scoped persistence",
+      "file": "skills/course-reviews/SKILL.md",
+      "triggers": ["评教", "评价", "评分", "星级", "评论", "平均分", "localStorage", "持久化"]
+    }
+  ],
+  "test_file": "tests/app.test.js"
+}

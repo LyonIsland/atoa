@@ -1,0 +1,706 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="ATOA co-creation project details and contribution audit dashboard">
+  <title>Project Dashboard · ATOA</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--ink);
+      background: var(--paper);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    button, a { -webkit-tap-highlight-color: transparent; }
+    button { font: inherit; }
+    .shell { width: min(1180px, calc(100% - 40px)); margin: 0 auto; }
+    header {
+      display: flex;
+      min-height: 74px;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--line);
+    }
+    .brand { display: flex; align-items: center; gap: 11px; color: inherit; text-decoration: none; }
+    .mark {
+      display: grid;
+      width: 39px;
+      height: 39px;
+      place-items: center;
+      border-radius: 12px;
+      color: var(--ink);
+      background: var(--inset);
+      font-family: inherit;
+      font-size: 21px;
+      box-shadow: none;
+    }
+    .brand strong, .brand small { display: block; }
+    .brand strong { font-size: 14px; letter-spacing: .02em; }
+    .brand small { margin-top: 2px; color: var(--muted); font-size: 10px; }
+    .back { color: var(--ink); font-size: 11px; font-weight: 750; text-decoration: none; }
+
+    .loading, .error {
+      margin: 80px 0;
+      padding: 50px 24px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      color: var(--muted);
+      background: var(--card);
+      text-align: center;
+    }
+    .dashboard[hidden], .loading[hidden], .error[hidden] { display: none; }
+    .project-hero {
+      display: grid;
+      grid-template-columns: minmax(0, .9fr) minmax(440px, 1.1fr);
+      gap: 28px;
+      padding: 48px 0 24px;
+    }
+    .eyebrow {
+      margin: 0 0 13px;
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 850;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+    }
+    h1 { margin: 0; font-family: inherit; font-size: clamp(38px, 5vw, 62px); font-weight: 500; line-height: 1; }
+    .description { max-width: 630px; margin: 18px 0 0; color: var(--muted); font-size: 13px; line-height: 1.85; }
+    .revision { margin-top: 18px; color: var(--muted); font-size: 9px; }
+    .revision code { color: var(--ink); font: 9px ui-monospace, SFMono-Regular, Menlo, monospace; }
+    .actions { display: flex; gap: 8px; margin-top: 24px; }
+    .button {
+      display: inline-flex;
+      min-height: 42px;
+      align-items: center;
+      justify-content: center;
+      padding: 0 16px;
+      border: 1px solid transparent;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 11px;
+      font-weight: 780;
+      text-decoration: none;
+    }
+    .button.primary { color: var(--paper); background: var(--ink); }
+    .button.secondary { color: var(--ink); border-color: var(--line); background: var(--card); }
+    .preview {
+      position: relative;
+      overflow: hidden;
+      min-height: 310px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: var(--card);
+      box-shadow: var(--shadow);
+    }
+    .preview iframe { width: 100%; height: 100%; min-height: 310px; border: 0; }
+    .live {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      padding: 6px 9px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      color: var(--ink);
+      background: var(--card);
+      font-size: 9px;
+      font-weight: 750;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      overflow: hidden;
+      margin: 0 0 42px;
+      border: 1px solid var(--line);
+      border-radius: 15px;
+      background: var(--card);
+      box-shadow: var(--shadow);
+    }
+    .stat { padding: 17px 19px; border-right: 1px solid var(--line); }
+    .stat:last-child { border-right: 0; }
+    .stat strong, .stat span { display: block; }
+    .stat strong { font-family: Georgia, serif; font-size: 25px; font-weight: 500; }
+    .stat span { margin-top: 3px; color: var(--muted); font-size: 9px; }
+
+    .content-grid { display: grid; grid-template-columns: minmax(0, 1fr) 250px; gap: 22px; align-items: start; padding-bottom: 70px; }
+    .delegation-section { margin-bottom: 34px; }
+    .section-head { display: flex; align-items: end; justify-content: space-between; gap: 20px; margin-bottom: 13px; }
+    .section-head h2 { margin: 0; font-family: Georgia, serif; font-size: 28px; font-weight: 500; }
+    .section-head p { margin: 5px 0 0; color: var(--muted); font-size: 10px; }
+    .count { color: var(--muted); font-size: 9px; }
+    .delegation-list { display: grid; gap: 9px; }
+    .delegation-card {
+      padding: 16px 18px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: var(--card);
+      box-shadow: var(--shadow);
+    }
+    .delegation-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    .delegation-status { padding: 5px 8px; border-radius: 999px; color: var(--ink); background: var(--surface); font-size: 8px; font-weight: 800; }
+    .delegation-status.queued { color: var(--attention); background: var(--attention-bg); }
+    .delegation-status.revision_requested { color: var(--red); background: var(--red-bg); }
+    .delegation-status.accepted { color: var(--success); background: var(--success-bg); }
+    .delegation-status.cancelled { color: var(--muted); background: var(--surface); }
+    .delegation-card time { color: var(--muted); font-size: 8px; }
+    .delegation-card h3 { margin: 11px 0 7px; font-family: Georgia, serif; font-size: 17px; font-weight: 500; line-height: 1.4; }
+    .delegation-flow { margin: 0; color: var(--muted); font-size: 9px; line-height: 1.6; }
+    .delegation-flow strong { color: var(--ink); font-weight: 700; }
+    .delegation-meta { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 11px; }
+    .delegation-meta span { padding: 5px 7px; border-radius: 7px; color: var(--ink); background: var(--surface); font-size: 8px; }
+    .delegation-usage { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 9px; color: var(--muted); font-size: 8px; }
+    .delegation-feedback { margin: 10px 0 0; padding-top: 9px; border-top: 1px solid var(--line); color: var(--muted); font-size: 9px; line-height: 1.55; }
+    .timeline { display: grid; gap: 11px; }
+    .change-card {
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 15px;
+      background: var(--card);
+      box-shadow: var(--shadow);
+    }
+    .change-main { padding: 18px 19px 16px; }
+    .change-top { display: flex; align-items: center; justify-content: space-between; gap: 14px; }
+    .change-status { padding: 5px 8px; border-radius: 999px; font-size: 8px; font-weight: 800; }
+    .change-status.accepted { color: var(--success); background: var(--success-bg); }
+    .change-status.rejected { color: var(--red); background: var(--red-bg); }
+    .change-time { color: var(--muted); font-size: 9px; }
+    .change-card h3 { margin: 14px 0 7px; font-family: Georgia, serif; font-size: 20px; font-weight: 500; line-height: 1.35; }
+    .outcome { margin: 0; color: var(--muted); font-size: 10px; line-height: 1.65; }
+    .byline { display: flex; flex-wrap: wrap; gap: 7px 15px; margin-top: 13px; color: var(--ink); font-size: 9px; }
+    .audit-grid { display: grid; grid-template-columns: 1fr 1fr; border-top: 1px solid var(--line); background: var(--surface); }
+    .audit-block { min-width: 0; padding: 15px 19px; }
+    .audit-block + .audit-block { border-left: 1px solid var(--line); }
+    .audit-label { display: block; margin-bottom: 9px; color: var(--muted); font-size: 8px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; }
+    .file-list, .check-list { display: flex; flex-wrap: wrap; gap: 6px; }
+    .file, .check {
+      padding: 5px 7px;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      color: var(--ink);
+      background: var(--card);
+      font-size: 8px;
+    }
+    .check.failed { color: var(--red); border-color: rgba(248, 81, 73, .4); background: var(--red-bg); }
+    .hashes { display: block; margin-top: 3px; color: var(--muted); font: 7px ui-monospace, SFMono-Regular, Menlo, monospace; }
+    .finding { margin: 8px 0 0; color: var(--red); font-size: 9px; line-height: 1.5; }
+    .revision-flow {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      padding: 11px 19px;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 8px;
+    }
+    .revision-flow code { color: var(--ink); font: 8px ui-monospace, SFMono-Regular, Menlo, monospace; }
+    .demo-action { margin-left: auto; color: var(--ink); font-size: 9px; font-weight: 750; text-decoration: none; }
+    .demo-action:hover { text-decoration: underline; }
+    details { border-top: 1px solid var(--line); }
+    summary { padding: 11px 19px; color: var(--ink); cursor: pointer; font-size: 9px; font-weight: 750; }
+    pre {
+      overflow: auto;
+      max-height: 300px;
+      margin: 0;
+      padding: 15px 19px;
+      color: var(--ink);
+      background: var(--inset);
+      font: 9px/1.6 ui-monospace, SFMono-Regular, Menlo, monospace;
+      white-space: pre-wrap;
+    }
+    .empty-history { padding: 45px 20px; border: 1px solid var(--line); border-radius: 15px; color: var(--muted); background: var(--card); text-align: center; font-size: 11px; }
+
+    .sidebar {
+      position: sticky;
+      top: 18px;
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: 15px;
+      background: var(--card);
+    }
+    .sidebar h2 { margin: 0 0 13px; font-family: Georgia, serif; font-size: 18px; font-weight: 500; }
+    .sidebar-label { margin: 15px 0 7px; color: var(--muted); font-size: 8px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; }
+    .editable-files { display: grid; gap: 5px; }
+    .editable-files code { padding: 7px 8px; border-radius: 7px; color: var(--ink); background: var(--surface); font: 8px ui-monospace, SFMono-Regular, Menlo, monospace; }
+    .sidebar p { margin: 0; color: var(--muted); font-size: 9px; line-height: 1.65; }
+    footer { min-height: 75px; display: flex; align-items: center; justify-content: space-between; border-top: 1px solid var(--line); color: var(--muted); font-size: 9px; }
+    .toast {
+      position: fixed;
+      right: 20px;
+      bottom: 20px;
+      padding: 11px 14px;
+      border-radius: 10px;
+      color: var(--ink);
+      background: var(--inset);
+      box-shadow: var(--shadow);
+      font-size: 10px;
+      opacity: 0;
+      transform: translateY(8px);
+      transition: .2s;
+      pointer-events: none;
+    }
+    .toast.show { opacity: 1; transform: translateY(0); }
+
+    @media (max-width: 860px) {
+      .shell { width: min(100% - 24px, 680px); }
+      .project-hero { grid-template-columns: 1fr; padding-top: 38px; }
+      .preview { min-height: 280px; }
+      .content-grid { grid-template-columns: 1fr; }
+      .sidebar { position: static; }
+    }
+    @media (max-width: 560px) {
+      .project-hero { gap: 22px; }
+      .actions { display: grid; }
+      .preview, .preview iframe { min-height: 220px; }
+      .stats { grid-template-columns: 1fr 1fr; }
+      .stat:nth-child(2) { border-right: 0; }
+      .stat:nth-child(-n+2) { border-bottom: 1px solid var(--line); }
+      .audit-grid { grid-template-columns: 1fr; }
+      .audit-block + .audit-block { border-top: 1px solid var(--line); border-left: 0; }
+      .change-top { align-items: flex-start; flex-direction: column; gap: 7px; }
+      footer { align-items: flex-start; flex-direction: column; justify-content: center; gap: 5px; }
+    }
+  </style>
+  <link rel="stylesheet" href="/platform-theme.css">
+</head>
+<body class="project-console">
+  <div class="shell">
+    <header>
+      <a class="brand" href="/">
+        <span class="mark">A</span>
+        <span><strong>ATOA</strong><small>Collaborative Coding</small></span>
+      </a>
+      <nav class="header-nav" aria-label="Main navigation">
+        <a class="nav-link" href="/philosophy.html">Philosophy</a>
+        <a class="back" href="/#projects">← Back to Projects</a>
+        <span class="account-name" id="account-name"></span>
+        <button class="logout-button" id="logout-button" type="button">Sign out</button>
+      </nav>
+    </header>
+
+    <main>
+      <div class="loading" id="loading">Loading project dashboard…</div>
+      <div class="error" id="error" hidden>This project does not exist or is temporarily unavailable.</div>
+      <div class="dashboard" id="dashboard" hidden>
+        <section class="project-hero">
+          <div>
+            <p class="eyebrow" id="project-id"></p>
+            <h1 id="project-name"></h1>
+            <p class="description" id="project-description"></p>
+            <p class="revision">
+              <span id="project-source"></span>
+              <span aria-hidden="true"> · </span>
+              revision <code id="project-revision"></code>
+            </p>
+            <div class="actions">
+              <button class="button primary" id="agent-action">Co-create with Your Agent</button>
+              <a class="button secondary" id="preview-action" target="_blank" rel="noopener">Open Current Demo</a>
+            </div>
+          </div>
+          <div class="preview">
+            <iframe id="project-preview" title="Live project preview"></iframe>
+            <span class="live" id="preview-status">● Current revision is live</span>
+          </div>
+        </section>
+
+        <section class="stats" aria-label="Project contribution statistics">
+          <div class="stat"><strong id="total-count">0</strong><span>All Contributions</span></div>
+          <div class="stat"><strong id="accepted-count">0</strong><span>Runnable Versions</span></div>
+          <div class="stat"><strong id="rejected-count">0</strong><span>Rejected</span></div>
+          <div class="stat"><strong id="contributor-count">0</strong><span>Contributors</span></div>
+        </section>
+
+        <section class="board-section" aria-labelledby="board-title">
+          <div class="board-heading">
+            <div>
+              <p class="eyebrow">Project operations</p>
+              <h2 id="board-title">Project Operations</h2>
+            </div>
+            <p>Review tasks, contributions, boundaries, and Skills. Accepted results move into the contribution audit and are not duplicated as task cards.</p>
+          </div>
+          <div class="board-tabs" role="tablist" aria-label="Project dashboard sections">
+            <button class="board-tab active" id="tab-tasks" type="button" role="tab" aria-selected="true" aria-controls="panel-tasks" data-tab="tasks">Tasks</button>
+            <button class="board-tab" id="tab-contributions" type="button" role="tab" aria-selected="false" aria-controls="panel-contributions" data-tab="contributions">Contributions</button>
+            <button class="board-tab" id="tab-boundary" type="button" role="tab" aria-selected="false" aria-controls="panel-boundary" data-tab="boundary">Boundaries</button>
+            <button class="board-tab" id="tab-skills" type="button" role="tab" aria-selected="false" aria-controls="panel-skills" data-tab="skills">Skills</button>
+          </div>
+          <div class="content-grid">
+            <section class="board-lane board-panel task-lane" id="panel-tasks" role="tabpanel" aria-labelledby="tab-tasks" data-panel="tasks">
+              <div class="lane-head">
+                <div>
+                  <h2 id="tasks-title">Task Queue</h2>
+                  <p>Tasks queued, awaiting claim, in progress, awaiting revision, or closed without a contribution.</p>
+                </div>
+                <span class="count" id="delegation-count"></span>
+              </div>
+              <div class="delegation-list" id="delegation-list"></div>
+            </section>
+
+            <section class="board-lane board-panel contribution-lane" id="panel-contributions" role="tabpanel" aria-labelledby="tab-contributions" data-panel="contributions" hidden>
+              <div class="lane-head">
+                <div>
+              <h2 id="contributions-title">Demo Versions & Audit</h2>
+              <p>Every accepted contribution is a directly accessible historical Demo. Rejected candidates do not create versions.</p>
+                </div>
+                <span class="count" id="history-count"></span>
+              </div>
+              <div class="timeline" id="timeline"></div>
+            </section>
+
+            <section class="board-lane board-panel boundary-lane" id="panel-boundary" role="tabpanel" aria-labelledby="tab-boundary" data-panel="boundary" hidden>
+              <div class="lane-head">
+                <div>
+                  <h2>Project Boundaries</h2>
+                  <p>The server-maintained write scope and deterministic merge rules.</p>
+                </div>
+              </div>
+              <div class="boundary-grid">
+                <div class="boundary-block">
+                  <div class="sidebar-label">Editable files</div>
+                  <div class="editable-files" id="editable-files"></div>
+                </div>
+                <div class="boundary-block">
+                  <div class="sidebar-label">Context principle</div>
+                  <p>The server sends only source and project Skills required by the task. It does not read other sessions, unrelated files, environment variables, or credentials.</p>
+                </div>
+                <div class="boundary-block">
+                  <div class="sidebar-label">Merge policy</div>
+                  <p id="validation-policy">Candidates pass deterministic rules and tests. The revision is checked again at submission, and only the server can merge atomically.</p>
+                </div>
+              </div>
+            </section>
+
+            <section class="board-lane board-panel skills-lane" id="panel-skills" role="tabpanel" aria-labelledby="tab-skills" data-panel="skills" hidden>
+              <div class="lane-head">
+                <div>
+                  <h2>Project Skills</h2>
+                  <p>Project-maintained execution guidance, matched by objective and delivered with Context.</p>
+                </div>
+                <span class="count" id="skill-count"></span>
+              </div>
+              <p class="skills-notice">This page lists which Skills a project provides. Individual Skill content is not publicly linked or previewed.</p>
+              <ul class="project-skills" id="project-skills" aria-label="Available project Skills"></ul>
+            </section>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <footer>
+      <span>ATOA Collaborative Coding</span>
+      <span>Project Contribution Audit</span>
+    </footer>
+  </div>
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, character => ({
+      '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+    })[character]);
+
+    const currentPlatformLanguage = value => String(value ?? '')
+      .replaceAll('新增课程星级评教、评价持久化与评分汇总', 'Added star ratings, persistent reviews, and rating summaries')
+      .replaceAll('新增一键自动课程规划与预算控制', 'Added one-click course planning with workload budgets')
+      .replaceAll('推荐课程时排除已选和时间冲突课程，并尊重当前筛选结果', 'Improved recommendations to exclude selected and conflicting courses while respecting active filters')
+      .replaceAll('文件白名单', 'File allowlist')
+      .replaceAll('源码大小限制', 'Source size limit')
+      .replaceAll('危险能力扫描', 'Dangerous capability scan')
+      .replaceAll('课程目录包含足够的跨学科演示数据', 'the catalog contains enough interdisciplinary demo courses')
+      .replaceAll('时间冲突检测能够识别重叠和不重叠课程', 'schedule conflict detection distinguishes overlapping and non-overlapping courses')
+      .replaceAll('选课方案会统计学分、工作量和冲突', 'course plan analysis totals credits, workload, and conflicts')
+      .replaceAll('推荐会优先考虑兴趣并遵守单课工作量限制', 'recommendations prioritize interests and respect per-course workload limits')
+      .replaceAll('动态课程文本在渲染前会被转义', 'dynamic course content is escaped before rendering')
+      .replaceAll('自动课程规划遵守预算、兴趣和时间冲突约束', 'automatic planning respects budget, interest, and schedule constraints')
+      .replaceAll('课程评教会校验输入并正确汇总平均分', 'course reviews validate input and summarize average ratings')
+      .replaceAll('持久化评价解析会拒绝损坏和非法数据', 'stored review parsing rejects malformed and invalid data')
+      .replaceAll('客户端 Agent 的候选结果已通过服务端控制平面审查、固定测试和原子合并。', 'The client Agent candidate passed server review and fixed tests, then merged atomically.')
+      .replaceAll('任务验收要求修改测试，但旧项目贡献边界未授予测试文件写权限；已修正边界，将基于新 revision 重新派发。', 'The task required a test change, but the earlier write scope excluded test files. The scope was corrected and the task will be redispatched from the new revision.');
+
+    const projectId = location.pathname.startsWith('/projects/')
+      ? decodeURIComponent(location.pathname.split('/').filter(Boolean).pop() || '')
+      : new URLSearchParams(location.search).get('id') || '';
+
+    async function loadIdentity() {
+      const response = await fetch('/api/v1/agents/me', { credentials: 'same-origin' });
+      if (response.status === 401) return location.replace(`/login?next=${encodeURIComponent(location.pathname + location.search)}`);
+      const data = await response.json();
+      document.getElementById('account-name').textContent = data.agent.name || data.agent.email;
+    }
+
+    async function logout() {
+      await fetch('/api/v1/auth/logout', { method: 'POST', credentials: 'same-origin' });
+      location.replace('/login');
+    }
+
+    function formatDate(value) {
+      return new Date(value).toLocaleString('en-US', {
+        year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit'
+      });
+    }
+
+    function showToast(message) {
+      const toast = document.getElementById('toast');
+      toast.textContent = message;
+      toast.classList.add('show');
+      clearTimeout(showToast.timer);
+      showToast.timer = setTimeout(() => toast.classList.remove('show'), 1800);
+    }
+
+    function copyTextFallback(text) {
+      const textarea = document.createElement('textarea');
+      textarea.value = text;
+      textarea.setAttribute('readonly', '');
+      textarea.style.position = 'fixed';
+      textarea.style.top = '0';
+      textarea.style.left = '0';
+      textarea.style.opacity = '0';
+      textarea.style.pointerEvents = 'none';
+      document.body.appendChild(textarea);
+      textarea.focus();
+      textarea.select();
+      textarea.setSelectionRange(0, textarea.value.length);
+      const copied = document.execCommand('copy');
+      textarea.remove();
+      if (!copied) throw new Error('clipboard_copy_failed');
+    }
+
+    async function copyText(text, message) {
+      try {
+        if (navigator.clipboard?.writeText && window.isSecureContext) {
+          await navigator.clipboard.writeText(text);
+        } else {
+          copyTextFallback(text);
+        }
+        showToast(message);
+      } catch {
+        showToast('Automatic copy failed. Please copy manually.');
+        window.prompt('Copy this text:', text);
+      }
+    }
+
+    async function copyAgentPrompt() {
+      const prompt = `Use $atoa-cocreation to send my next request and acceptance criteria to the ATOA server control plane for project ${projectId}. Send only content related to this task; do not read or upload other sessions, local credentials, or unrelated files. Claim the minimum Context, implement as the authorized client Agent, and return only a candidate for server-side security scanning, fixed tests, merge, and runnable Demo creation.`;
+      await copyText(prompt, 'Project prompt copied');
+    }
+
+    function renderChange(change) {
+      const accepted = change.status === 'accepted';
+      const outcome = accepted
+        ? 'This contribution passed file-scope checks, security scanning, and fixed project tests, then merged into a new live revision.'
+        : 'This candidate did not enter the live project. Failed policy checks or test output remain below for the client Agent to analyze and revise.';
+      const files = (change.files || []).map(file => `
+        <span class="file">${escapeHtml(file.path)}
+          <span class="hashes">${escapeHtml(file.before_hash)} → ${escapeHtml(file.after_hash)}</span>
+        </span>`).join('') || '<span class="file">No file records</span>';
+      const checks = (change.review?.checks || []).map(check => `
+        <span class="check ${check.passed ? '' : 'failed'}">${check.passed ? '✓' : '×'} ${escapeHtml(currentPlatformLanguage(check.name))}</span>
+      `).join('') || '<span class="check">No validation records</span>';
+      const findings = (change.review?.findings || []).map(finding =>
+        `<p class="finding">${escapeHtml(finding.file)} · ${escapeHtml(currentPlatformLanguage(finding.message))}</p>`
+      ).join('');
+      const testLabel = change.tests?.passed ? 'Tests passed' : 'Tests failed';
+      const demoAction = accepted && change.demo?.path
+        ? `<a class="demo-action" href="${escapeHtml(change.demo.path)}" target="_blank" rel="noopener">Open this Demo version ↗</a>`
+        : accepted
+          ? '<span class="demo-action">No runnable snapshot was retained for this early version</span>'
+          : '<span class="demo-action">No Demo version created</span>';
+      return `<article class="change-card">
+        <div class="change-main">
+          <div class="change-top">
+            <span class="change-status ${accepted ? 'accepted' : 'rejected'}">${accepted ? 'Accepted & merged' : 'Rejected'}</span>
+            <time class="change-time">${escapeHtml(formatDate(change.created_at))}</time>
+          </div>
+          <h3>${escapeHtml(currentPlatformLanguage(change.message))}</h3>
+          <p class="outcome">${outcome}</p>
+          <div class="byline">
+            <span>Contributor · ${escapeHtml(change.author?.name || 'ATOA Agent')}</span>
+            <span>${(change.files || []).length} files</span>
+            <span>${testLabel}</span>
+          </div>
+        </div>
+        <div class="audit-grid">
+          <div class="audit-block">
+            <span class="audit-label">Changed files</span>
+            <div class="file-list">${files}</div>
+          </div>
+          <div class="audit-block">
+            <span class="audit-label">Server validation</span>
+            <div class="check-list">${checks}</div>
+            ${findings}
+          </div>
+        </div>
+        <div class="revision-flow">
+          <span>revision</span>
+          <code>${escapeHtml(change.base_revision)}</code>
+          <span>→</span>
+          <code>${escapeHtml(change.revision)}</code>
+          ${demoAction}
+        </div>
+        <details>
+          <summary>View fixed test output</summary>
+          <pre>${escapeHtml(currentPlatformLanguage(change.tests?.output || 'No test output'))}</pre>
+        </details>
+      </article>`;
+    }
+
+    function renderDelegation(task) {
+      const labels = {
+        queued: task.queue_position ? `Queued · #${task.queue_position}` : 'Queued',
+        dispatched: 'Awaiting claim',
+        in_progress: 'In progress',
+        revision_requested: 'Revision requested',
+        accepted: 'Accepted',
+        rejected: 'Rejected',
+        cancelled: 'Cancelled'
+      };
+      const assignee = task.assignee?.name || 'Awaiting client Agent';
+      const formatBytes = bytes => bytes < 1024
+        ? `${bytes} B`
+        : `${(bytes / 1024).toFixed(bytes < 10240 ? 1 : 0)} KB`;
+      return `<article class="delegation-card">
+        <div class="delegation-top">
+          <span class="delegation-status ${escapeHtml(task.status)}">${escapeHtml(labels[task.status] || task.status)}</span>
+          <time>${escapeHtml(formatDate(task.updated_at))}</time>
+        </div>
+        <h3>${escapeHtml(task.display_intent || 'Private co-creation task (raw prompt not public)')}</h3>
+        <p class="delegation-flow"><strong>ATOA Server control plane</strong> → ${escapeHtml(assignee)}</p>
+        <div class="delegation-meta">
+          <span>Context v${task.context_version}</span>
+          <span>${task.context_files} files</span>
+          <span>${task.attempts} candidate submissions</span>
+        </div>
+        <div class="delegation-usage">
+          <span>Server downlink ${formatBytes(task.usage.server_to_client_bytes)}</span>
+          <span>Client uplink ${formatBytes(task.usage.client_to_server_bytes)}</span>
+          <span>Context cache hits ${task.usage.context_cache_hits}</span>
+          <span>Download avoided ${formatBytes(task.usage.context_bytes_avoided)}</span>
+          <span>${task.usage.api_calls} API calls</span>
+        </div>
+        ${task.latest_feedback ? `<p class="delegation-feedback">${escapeHtml(currentPlatformLanguage(task.latest_feedback))}</p>` : ''}
+      </article>`;
+    }
+
+    function render(data) {
+      const project = data.project;
+      document.title = `${project.name} · ATOA Project Dashboard`;
+      document.getElementById('project-id').textContent = project.id;
+      document.getElementById('project-name').textContent = project.name;
+      document.getElementById('project-description').textContent = project.description;
+      document.getElementById('project-revision').textContent = project.revision;
+      document.getElementById('project-source').textContent = project.source?.label || 'ATOA Projects';
+      document.getElementById('validation-policy').textContent = project.validation_ready
+        ? 'Candidates pass deterministic rules and project tests. The revision is checked again at submission, and only the server can merge atomically.'
+        : 'This external project has not declared fixed tests. ATOA can resolve and read its source, but will not create mergeable candidates until authoritative validation is configured.';
+      const agentAction = document.getElementById('agent-action');
+      if (!project.validation_ready) {
+        agentAction.disabled = true;
+        agentAction.textContent = 'Awaiting Fixed Tests';
+        agentAction.title = 'ATOA owns the project path but will not create a task that cannot be validated authoritatively';
+      }
+      const preview = document.getElementById('project-preview');
+      const previewAction = document.getElementById('preview-action');
+      if (project.preview_path) {
+        preview.src = project.preview_path;
+        preview.title = `${project.name} live preview`;
+        previewAction.href = project.preview_path;
+      } else {
+        preview.replaceWith(Object.assign(document.createElement('p'), {
+          className: 'preview-empty',
+          textContent: 'No directly previewable Web entry was detected.'
+        }));
+        previewAction.hidden = true;
+        document.getElementById('preview-status').hidden = true;
+      }
+      document.getElementById('total-count').textContent = project.contributions.total;
+      document.getElementById('accepted-count').textContent = project.contributions.runnable;
+      document.getElementById('rejected-count').textContent = project.contributions.rejected;
+      document.getElementById('contributor-count').textContent = project.contributions.contributors;
+      const pendingTasks = data.delegations.filter(task => task.status !== 'accepted');
+      const activeTasks = pendingTasks.filter(task =>
+        ['dispatched', 'in_progress', 'revision_requested'].includes(task.status)
+      );
+      const queuedTasks = pendingTasks.filter(task => task.status === 'queued');
+      document.getElementById('history-count').textContent = `${project.contributions.runnable} runnable versions · ${data.changes.length} audit records`;
+      document.getElementById('delegation-count').textContent =
+        `${pendingTasks.length} tasks · ${activeTasks.length} active · ${queuedTasks.length} queued`;
+      document.getElementById('delegation-list').innerHTML = pendingTasks.length
+        ? pendingTasks.map(renderDelegation).join('')
+        : '<div class="empty-history">No pending tasks. Accepted tasks are available in the contribution audit.</div>';
+      document.getElementById('editable-files').innerHTML = project.editable_files
+        .map(file => `<code>${escapeHtml(file)}</code>`).join('');
+      document.getElementById('project-skills').innerHTML = (project.skills || []).length
+        ? project.skills.map(skill => `
+            <li class="project-skill">
+              <div>
+                <strong>${escapeHtml(skill.name)}</strong>
+                <span>Delivered on demand</span>
+              </div>
+              <p>${escapeHtml(skill.description)}</p>
+            </li>
+          `).join('')
+        : '<li class="project-skill empty-skill">This project has not declared any Skills.</li>';
+      document.getElementById('skill-count').textContent = `${(project.skills || []).length}`;
+      document.getElementById('timeline').innerHTML = data.changes.length
+        ? data.changes.map(renderChange).join('')
+        : '<div class="empty-history">No contribution records yet. Waiting for the first contributor.</div>';
+      agentAction.addEventListener('click', copyAgentPrompt);
+      document.getElementById('loading').hidden = true;
+      document.getElementById('dashboard').hidden = false;
+    }
+
+    function setupBoardTabs() {
+      const tabs = [...document.querySelectorAll('[data-tab]')];
+      const panels = [...document.querySelectorAll('[data-panel]')];
+      const available = new Set(tabs.map(tab => tab.dataset.tab));
+
+      function activateTab(name, focus = false) {
+        const activeName = available.has(name) ? name : 'tasks';
+        tabs.forEach(tab => {
+          const active = tab.dataset.tab === activeName;
+          tab.classList.toggle('active', active);
+          tab.setAttribute('aria-selected', String(active));
+          tab.tabIndex = active ? 0 : -1;
+          if (active && focus) tab.focus();
+        });
+        panels.forEach(panel => {
+          panel.hidden = panel.dataset.panel !== activeName;
+        });
+        history.replaceState(null, '', `#${activeName}`);
+      }
+
+      tabs.forEach((tab, index) => {
+        tab.addEventListener('click', () => activateTab(tab.dataset.tab));
+        tab.addEventListener('keydown', event => {
+          if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
+          event.preventDefault();
+          const nextIndex = event.key === 'Home'
+            ? 0
+            : event.key === 'End'
+              ? tabs.length - 1
+              : (index + (event.key === 'ArrowRight' ? 1 : -1) + tabs.length) % tabs.length;
+          activateTab(tabs[nextIndex].dataset.tab, true);
+        });
+      });
+      activateTab(location.hash.slice(1));
+    }
+
+    setupBoardTabs();
+    document.getElementById('logout-button').addEventListener('click', logout);
+    loadIdentity().catch(() => location.replace('/login'));
+
+    fetch(`/api/cloud-projects/${encodeURIComponent(projectId)}`)
+      .then(response => {
+        if (!response.ok) throw new Error('project_not_found');
+        return response.json();
+      })
+      .then(render)
+      .catch(() => {
+        document.getElementById('loading').hidden = true;
+        document.getElementById('error').hidden = false;
+      });
+  </script>
+</body>
+</html>
