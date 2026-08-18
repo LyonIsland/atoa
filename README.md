@@ -1,69 +1,44 @@
 # ATOA Collaborative Coding
 
-ATOA 是一个 Agent-native 项目共创平台：用户的本地 Coding Agent 发起修改请求，当前版本
-由确定性的服务端控制平面负责合同预检、Context、权限、Context 冲突队列、安全扫描、固定
-测试、原子合并和最终 revision。本地 Agent 只执行被授权的实现，不拥有服务端合并权限。
+**English** | [简体中文](README.zh-CN.md)
 
-这个开源发行版只包含一个示例项目：`courseplanner`（学生选课助手）。它展示课程筛选、
-推荐、工作量统计、时间冲突检测、自动规划和课程评价，并带有固定 Node.js 测试。
+ATOA is an agent-native platform for collaborative project creation. A user's local Coding Agent initiates a modification request, while the deterministic server control plane performs contract preflight, selects Context and permissions, manages Context-conflict queues, runs security scans and fixed tests, merges atomically, and assigns the final revision. The local Agent only performs the authorized implementation and never has server-side merge authority.
 
-## ATOA 的理念与优势
+This open-source distribution includes one sample project: `courseplanner`, a course-planning assistant. It demonstrates course filtering, recommendations, workload summaries, schedule-conflict detection, automatic planning, and course reviews, with fixed Node.js tests.
 
-ATOA 希望建立一种协作式 Vibe Coding 模式：创作过程仍属于每个用户自己的 Agent 和私密
-会话，而项目事实、运行环境与最终交付由统一的云端服务管理。用户不需要把完整
-仓库、全部对话或模型凭据交给平台；客户端只发送当前任务所需的目标、验收标准、进度、
-候选变更与证据。云端把通过审查的结果合并为所有参与者都能直接体验的在线版本。
+## ATOA's Philosophy and Advantages
 
-> **当前架构：** 服务端是规则驱动的 Node.js 控制平面，不是 Agent，后续也不会承担 Agent
-> 的推理或实现职责。当前版本已经按源码 Context 路径进行同步调度：Context 不重叠的任务可
-> 同时执行，存在路径重叠的任务继续排队。更细粒度的符号与显式依赖分析仍在开发中。
+ATOA aims to establish a collaborative Vibe Coding model: each user's Agent and private conversation remain the place where creation happens, while a unified cloud service manages project facts, the runtime environment, and final delivery. Users do not need to give the platform their complete repository, full conversation history, or model credentials. The client sends only the goals, acceptance criteria, progress, candidate changes, and evidence required for the current task. The cloud merges approved results into an online version that every participant can immediately experience.
 
-服务端不调用模型，也不启动服务端 Agent。它通过标准 REST API 提供项目元数据、任务合同、
-Context、权限、队列状态、候选提交、验证结果和版本历史；Agent Kit 再把这些接口包装成客户端
-Agent 可调用的 CLI 命令、Skill 和 MCP tools。服务端只执行预先声明的固定测试与确定性规则，
-代码理解、方案选择和实现始终发生在客户端 Agent。
+> **Current architecture:** The server is a rule-driven Node.js control plane, not an Agent, and it will not take on Agent reasoning or implementation responsibilities. The current release already schedules work concurrently by source Context path: tasks with non-overlapping Context may run together, while overlapping tasks remain queued. Finer-grained symbol and explicit dependency analysis is still under development.
 
-它围绕四个核心优势展开：
+The server does not call models or launch server-side Agents. It exposes project metadata, task contracts, Context, permissions, queue status, candidate submissions, validation results, and revision history through a standard REST API. The Agent Kit wraps these APIs as CLI commands, a Skill, and MCP tools that client Agents can use. The server runs only predefined fixed tests and deterministic rules; code understanding, solution design, and implementation always happen in the client Agent.
 
-1. **无需配置环境，验收后直接部署。** 客户端不必 clone 完整项目、安装依赖、配置运行时
-   或手工上线。服务端持有权威环境，负责固定测试、安全扫描、原子合并和 Demo 部署。
-2. **私密会话，共享成果。** 用户的原始 Prompt、实验过程和开发对话只对任务参与者可见；
-   公开侧只展示脱敏后的开发意图、实现摘要、验证结果、revision 和可运行 Demo。
-3. **即时但有边界的协作。** 控制平面用源码 Context 路径作为当前的并发占用单元：不重叠的
-   任务可以同时派发；重叠任务按创建顺序等待，占用释放后再基于最新 revision 生成 Context。
-   增量 Context 请求也必须通过相同冲突检查。提交时即使全局 revision 已由不相关贡献推进，
-   只要候选目标文件仍匹配原 SHA-256，就可在当前项目上重新验证并安全合并；目标文件变化则
-   返回 revision conflict。更细粒度的符号依赖分析仍在开发中。
-4. **自带 Agent 与模型能力。** 用户选择自己的 Coding Agent、模型和 Token，并自行控制模型
-   成本；平台不转售模型能力，也不会接管客户端的 Agent launcher 或模型凭据。
+ATOA is built around four core advantages:
 
-当前已经落地的是“个人 Agent + 服务端控制平面”：个人 Agent 负责理解意图、规划、实现并
-返回候选；控制平面按照固定策略负责合同预检、Context 选择、文件权限、队列、base revision、
-验证、合并和最终版本。客户端提供的检查只是证据，只有服务端验证通过的候选才能改变公开
-项目。任务排队时，按需本地 Worker 会继续等待；任务被派发后，它会启动新的客户端 Agent，
-因此最初发起请求的 Agent 不需要保持本轮阻塞。
+1. **No environment setup; deploy after acceptance.** The client does not need to clone the complete project, install dependencies, configure a runtime, or deploy manually. The server owns the authoritative environment and performs fixed tests, security scanning, atomic merges, and Demo deployment.
+2. **Private conversations, shared outcomes.** A user's original prompts, experiments, and development conversations remain visible only to task participants. The public side shows only sanitized development intent, implementation summaries, validation results, revisions, and runnable Demos.
+3. **Immediate collaboration with clear boundaries.** The control plane currently uses source Context paths as concurrency units. Non-overlapping tasks can be dispatched together; overlapping tasks wait in creation order and receive Context from the latest revision after the occupied scope is released. Incremental Context requests pass through the same conflict checks. Even if unrelated contributions advance the global revision, a candidate can be revalidated and safely merged when every target file still matches its SHA-256. If a target file changed, the server returns a revision conflict. Finer-grained symbol dependency analysis is still under development.
+4. **Bring your own Agent and model.** Users choose their Coding Agent, model, and token, and retain control over model costs. The platform neither resells model capacity nor takes control of the client's Agent launcher or model credentials.
 
-已经实现的是基于源码 Context 的第一阶段同步协作规则，而不是服务端 Agent：控制平面根据
-Context、写权限和文件 hash 决定哪些任务可以并行，并在候选返回后处理验证顺序与 revision
-兼容性。后续会加入更细粒度的符号和显式依赖分析。每次接受的贡献仍会形成可审计的 revision 和不可变的可运行
-Demo，让协作者无需拉取代码和搭建环境，就能直接理解并体验这个版本解决了什么问题。
+The implemented model is “personal Agent + server control plane.” The personal Agent understands intent, plans, implements, and returns a candidate. The control plane follows fixed policy for contract preflight, Context selection, file permissions, queues, base revisions, validation, merges, and final versions. Client-side checks are evidence only; a candidate can change the public project only after server validation succeeds. While a task is queued, the on-demand local Worker keeps waiting. Once dispatched, it launches a new client Agent, so the Agent that originally submitted the request does not need to remain blocked.
 
-## 开源发行边界
+This is the first phase of source-Context-aware synchronized collaboration, not a server Agent. The control plane uses Context, write permissions, and file hashes to decide which tasks may run in parallel, then handles validation order and revision compatibility after candidates return. Finer-grained symbol and explicit dependency analysis will follow. Every accepted contribution still produces an auditable revision and an immutable runnable Demo, allowing collaborators to understand and experience what a version solves without pulling the code or setting up an environment.
 
-发行包不包含以下私有或运行时内容：
+## Open-Source Distribution Boundaries
 
-- 真实 Agent 身份、会话、任务、Prompt、候选和贡献数据库；
-- 已部署服务的域名、内部宿主控制脚本或访问令牌；
-- `.env`、Demo 历史、日志、缓存、`node_modules` 和旧 Git 历史；
-- 选课助手以外的内置平台项目。
+The distribution does not include the following private or runtime data:
 
-`npm run check:release` 会检查项目数量、禁止文件、私有域名、宿主集成痕迹、私钥和常见
-Token 格式。发布前仍应使用你所在组织的 secret scanner，并单独审计 Git 历史。
+- Real Agent identities, sessions, tasks, prompts, candidates, or contribution databases;
+- Deployed service domains, internal host-control scripts, or access tokens;
+- `.env` files, Demo history, logs, caches, `node_modules`, or old Git history;
+- Built-in platform projects other than the course-planning assistant.
 
-## 部署服务端
+`npm run check:release` checks the project count, forbidden files, private domains, host-integration traces, private keys, and common token formats. Before publishing, you should still run your organization's secret scanner and audit the Git history separately.
 
-当前版本保持为单一 Node.js 服务，使用内嵌 SQLite 持久化身份、Session、任务和贡献记录，不需要
-另行部署数据库服务。要求 Node.js 22 或更高版本：
+## Deploying the Server
+
+The current release remains a single Node.js service. It uses embedded SQLite to persist identities, sessions, tasks, and contribution records, so no separate database service is required. Node.js 22 or later is required:
 
 ```bash
 npm ci
@@ -72,14 +47,14 @@ cp .env.example .env
 npm start
 ```
 
-`.env.example` 默认把运行时数据放在源码目录下被 Git 忽略的 `data/` 中。部署时至少修改：
+By default, `.env.example` places runtime data under the Git-ignored `data/` directory in the source tree. At minimum, change these values for deployment:
 
 ```dotenv
 PUBLIC_URL=https://atoa.example.com
-ATOA_INVITE_CODE=使用密码管理器生成的长随机字符串
+ATOA_INVITE_CODE=a-long-random-string-generated-by-a-password-manager
 ```
 
-也可以通过环境变量启动：
+You can also start the service with environment variables:
 
 ```bash
 PORT=7000 \
@@ -92,12 +67,9 @@ ATOA_INVITE_CODE='replace-with-a-long-random-value' \
 npm start
 ```
 
-在长期运行的服务器上，可使用 systemd、Supervisor 或部署方现有的 Node.js 进程管理机制保持
-`npm start` 运行。把 7000 端口放在 Caddy、Nginx 或云负载均衡之后，并只对外提供 HTTPS；
-反向代理需要保留 `Host` 和 `X-Forwarded-Proto`。`PUBLIC_URL` 必须是用户实际访问的 HTTPS
-origin，不能包含尾部 `/`。
+For a long-running server, use systemd, Supervisor, or your deployment provider's existing Node.js process manager to keep `npm start` running. Put port 7000 behind Caddy, Nginx, or a cloud load balancer, and expose HTTPS only. The reverse proxy must preserve `Host` and `X-Forwarded-Proto`. `PUBLIC_URL` must be the HTTPS origin users actually visit, without a trailing `/`.
 
-部署完成后检查：
+After deployment, verify:
 
 ```bash
 curl https://atoa.example.com/api/v1
@@ -105,57 +77,38 @@ curl -I https://atoa.example.com/agent-kit/install.sh
 curl -I https://atoa.example.com/cloud-apps/courseplanner/
 ```
 
-SQLite 启用 WAL、外键、5 秒 busy timeout、完整同步和 schema migration。当前应用仍按单个
-Node.js 实例运行；不要使用 PM2 cluster 或让多个服务进程同时读写同一个数据库。需要横向扩展时，
-应先迁移到共享数据库和跨实例事务模型。
+SQLite uses WAL, foreign keys, a five-second busy timeout, full synchronization, and schema migrations. The application still runs as a single Node.js instance. Do not use PM2 cluster mode or allow multiple service processes to write to the same database. Before scaling horizontally, migrate to a shared database and a cross-instance transaction model.
 
-升级前停止 ATOA 进程并备份整个 `data/`，这样数据库、WAL、托管项目和 Demo 历史会处于同一个
-恢复点。恢复时停止服务、替换完整 `data/`，再启动并检查 `/api/v1`。不要只在服务运行期间复制
-`atoa.sqlite` 主文件，也不要把 `.env`、数据库、项目运行时目录或 Demo 历史提交到 Git。
+Before upgrading, stop the ATOA process and back up the entire `data/` directory so the database, WAL, managed projects, and Demo history share one recovery point. To restore, stop the service, replace the complete `data/` directory, restart, and check `/api/v1`. Do not copy only the main `atoa.sqlite` file while the service is running, and never commit `.env`, databases, project runtime directories, or Demo history to Git.
 
-### 从 2.2 JSON 数据迁移
+### Migrating JSON Data from 2.2
 
-2.3 首次启动会自动创建 SQLite schema。旧部署保留原来的 `ATOA_DB_FILE=...json` 也可以启动：
-服务会把该配置识别为只读迁移源，在同目录或默认 `data/atoa.sqlite` 中创建 SQLite 数据库，并一次性
-导入用户、Session、任务和贡献。也可以显式配置：
+Version 2.3 creates the SQLite schema on first startup. Existing deployments may keep their original `ATOA_DB_FILE=...json` setting: the service treats it as a read-only migration source, creates a SQLite database in the same directory or at the default `data/atoa.sqlite` path, and imports users, sessions, tasks, and contributions once. You can also configure the paths explicitly:
 
 ```dotenv
 ATOA_SQLITE_FILE=./data/atoa.sqlite
 ATOA_LEGACY_JSON_FILE=./data/atoa-data.json
 ```
 
-导入记录和源文件 SHA-256 会写入 `legacy_imports`，后续重启不会重复导入。原 JSON 文件不会自动
-删除；确认账户、项目和历史正常后，将它移入受保护的离线备份。JSON 损坏或 collection 结构错误时
-服务会拒绝启动，不会再静默生成空数据库。
+The import record and source-file SHA-256 are written to `legacy_imports`, preventing duplicate imports after restarts. The original JSON file is not deleted automatically. After confirming that accounts, projects, and history are intact, move it to protected offline storage. If the JSON is corrupt or its collection structure is invalid, the service refuses to start instead of silently creating an empty database.
 
-`ATOA_INVITE_CODE` 只允许创建新账户，不能用于登录或冒用现有账户。注册密码使用随机 salt
-和 scrypt 保存；客户端登录只接受已经注册的邮箱与密码。如果需要验证邮箱所有权或企业身份，
-请在 ATOA 前面部署 identity-aware proxy。完整注意事项见 [SECURITY.md](SECURITY.md)。
+`ATOA_INVITE_CODE` authorizes account creation only. It cannot be used to log in or impersonate an existing account. Registration passwords are stored with a random salt and scrypt; client login accepts only an already registered email and its password. If you need email ownership or enterprise identity verification, deploy an identity-aware proxy in front of ATOA. See [SECURITY.md](SECURITY.md) for full guidance.
 
-### 当前验证边界
+### Current Validation Boundary
 
-服务端只接受任务合同授权的文件，并对 `base_revision`、逐文件 SHA-256、文件白名单、源码大小、
-危险能力和固定测试进行确定性校验。候选先物化到临时副本；失败候选不会修改公开项目，合并
-过程保持原子性，已接受版本可以从 Demo 历史恢复。
+The server accepts only files authorized by the task contract and deterministically validates the `base_revision`, per-file SHA-256, file allowlist, source size, dangerous capabilities, and fixed tests. Candidates are materialized in a temporary copy first. Failed candidates never alter the public project, merges remain atomic, and accepted versions can be restored from Demo history.
 
-当前版本的固定测试由服务端启动受限的本地子进程执行，设置超时和输出上限，但不提供操作系统
-级的不可信代码沙箱。它适用于由部署方管理项目、Skill、固定测试和受邀成员的当前产品阶段。
-若要开放给完全不可信的任意代码执行，应由部署方接入自己的隔离运行或发布机制；这不是当前
-数据通信协议的一部分。
+The current release runs fixed tests in restricted local child processes with timeouts and output limits, but it does not provide an operating-system-level sandbox for untrusted code. This fits the current product stage, where the deployer manages projects, Skills, fixed tests, and invited members. To accept completely untrusted arbitrary code execution, deployers must integrate their own isolated execution or publishing mechanism; that mechanism is outside the current data communication protocol.
 
-## 浏览器登录、注册与项目权限
+## Browser Login, Registration, and Project Permissions
 
-访问服务端首页时，未登录用户会被重定向到 `/login`。注册需要部署方邀请码；登录只接受已经
-注册的邮箱和密码。浏览器 Session 使用 Secure HttpOnly Cookie，不把访问 Token 写入
-localStorage、sessionStorage 或页面 JavaScript。项目目录、Dashboard、预览、Demo、文件、
-Context、任务和贡献接口都经过服务端项目 ACL，不能依赖隐藏按钮代替授权检查。
+Unauthenticated visitors to the server home page are redirected to `/login`. Registration requires a deployer-provided invite code; login accepts only an already registered email and password. Browser sessions use Secure HttpOnly cookies and never put access tokens in `localStorage`, `sessionStorage`, or page JavaScript. Project directories, dashboards, previews, Demos, files, Context, tasks, and contribution APIs all pass through the server's project ACL. Hiding buttons is never a substitute for authorization checks.
 
-内置 `courseplanner` 声明为所有注册用户可参与。用户创建的托管项目默认私有，仅创建者和创建者
-明确添加的成员可以发现和参与；只有创建者可以管理成员和项目 Skill。
+The bundled `courseplanner` project allows participation by all registered users. User-created managed projects are private by default and are visible only to their creator and explicitly added members. Only the creator can manage members and project Skills.
 
-## 使用 CLI 创建项目、添加成员与 Skill
+## Creating Projects, Adding Members, and Managing Skills with the CLI
 
-邀请码只在注册时使用：
+The invite code is used only during registration:
 
 ```bash
 read -rsp "ATOA invite code: " ATOA_INVITE_CODE; echo
@@ -167,8 +120,7 @@ atoa auth login --email user@example.com
 unset ATOA_PASSWORD
 ```
 
-登录不会自动创建账户。未注册邮箱、错误密码和弱密码都会被拒绝。创建一个持久化项目并添加
-项目 Skill：
+Login never creates an account implicitly. Unregistered emails, incorrect passwords, and weak passwords are rejected. Create a persistent project and add a project Skill:
 
 ```bash
 atoa cloud create \
@@ -185,24 +137,22 @@ atoa cloud skill-add \
   --triggers '["release","发布","changelog"]'
 ```
 
-项目创建者可以把另一个已注册账户加入私有项目：
+A project creator can add another registered account to a private project:
 
 ```bash
 atoa cloud member-add --project release-notes --email teammate@example.com
 atoa cloud member-list --project release-notes
-# member-list 返回稳定 member id 后，可以撤销访问
+# After member-list returns a stable member ID, access can be revoked
 atoa cloud member-remove --project release-notes --member agt_xxx --confirm
 ```
 
-撤销成员会同步取消该成员在项目中的活动任务。新项目自动包含初始页面、四个可编辑文件和固定
-测试，创建后即可用于委派、Context 下发、验证、合并和可运行版本发布。
+Removing a member also cancels that member's active tasks in the project. New projects include an initial page, four editable files, and fixed tests, and are immediately ready for delegation, Context delivery, validation, merging, and runnable version publishing.
 
-## 向目标用户分发 Agent Kit
+## Distributing the Agent Kit to Users
 
-服务端会从 `/agent-kit/` 直接发布与当前协议匹配的 CLI、Skill 和 Codex 插件。把下面的
-`https://atoa.example.com` 换成你的域名，再发送给受邀用户。
+The server publishes the protocol-matched CLI, Skill, and Codex plugin directly from `/agent-kit/`. Replace `https://atoa.example.com` below with your domain, then send the instructions to invited users.
 
-Linux / macOS：
+Linux / macOS:
 
 ```bash
 curl -fsSL https://atoa.example.com/agent-kit/install.sh \
@@ -214,7 +164,7 @@ atoa auth login --email user@example.com
 atoa doctor
 ```
 
-Windows PowerShell：
+Windows PowerShell:
 
 ```powershell
 $env:ATOA_BASE_URL = "https://atoa.example.com/agent-kit"
@@ -224,24 +174,19 @@ atoa auth login --email user@example.com
 atoa doctor
 ```
 
-安装器会保存目标服务端地址、安装 `atoa` CLI、同步 `atoa-cocreation` Skill；检测到 Codex
-CLI 时，还会注册仓库内的 marketplace 并安装 `atoa-codex` 插件。Codex 用户应先按
-[OpenAI 官方 Codex CLI 文档](https://learn.chatgpt.com/docs/codex/cli)完成 Codex 安装与登录。
-插件安装后必须新建 Codex 会话，新的 Skill 和 MCP 工具才会加载。
+The installer saves the target server address, installs the `atoa` CLI, and synchronizes the `atoa-cocreation` Skill. When it detects Codex CLI, it also registers the repository marketplace and installs the `atoa-codex` plugin. Codex users should first install and sign in to Codex by following the [official OpenAI Codex CLI documentation](https://learn.chatgpt.com/docs/codex/cli). Start a new Codex session after plugin installation so the new Skill and MCP tools are loaded.
 
-如果用户没有 Codex，也可以直接使用 `atoa` CLI；本地 Worker 的默认 Agent launcher 是
-`codex exec`，可由用户在本机通过 `ATOA_WORKER_AGENT_COMMAND` 和
-`ATOA_WORKER_AGENT_ARGS_JSON` 选择受信任的其他 launcher。服务端不能下发或修改该命令。
+Users without Codex can use the `atoa` CLI directly. The local Worker's default Agent launcher is `codex exec`; users may select another trusted launcher on their machine with `ATOA_WORKER_AGENT_COMMAND` and `ATOA_WORKER_AGENT_ARGS_JSON`. The server cannot provide or modify this command.
 
-### 建议发给用户的最短引导
+### Suggested Quick Start for Users
 
-1. 安装 Node.js 22+ 和自己的 Coding Agent。
-2. 运行管理员提供的 Agent Kit 安装命令。
-3. 管理员先邀请用户完成注册；用户使用已注册邮箱和自己的密码登录。
-4. 新开 Agent 会话后说：“列出 ATOA 当前开放的共创项目”。
-5. 对 `courseplanner` 提出明确修改目标和验收标准。
+1. Install Node.js 22+ and your preferred Coding Agent.
+2. Run the Agent Kit installation command supplied by the administrator.
+3. The administrator invites the user to register; the user then logs in with the registered email and their own password.
+4. Start a new Agent session and ask: “List the ATOA projects currently open for collaboration.”
+5. Give `courseplanner` a clear modification goal and concrete acceptance criteria.
 
-## 验证开源副本
+## Verifying the Open-Source Copy
 
 ```bash
 npm ci
@@ -251,9 +196,8 @@ npm run check:release
 git diff --check
 ```
 
-协议说明见 [CLOUD_PROTOCOL.md](CLOUD_PROTOCOL.md)，客户端细节见
-[agent-kit/README.md](agent-kit/README.md)。
+See [CLOUD_PROTOCOL.md](CLOUD_PROTOCOL.md) for the protocol and [agent-kit/README.md](agent-kit/README.md) for client details.
 
 ## License
 
-MIT，见 [LICENSE](LICENSE)。
+MIT. See [LICENSE](LICENSE).
