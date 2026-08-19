@@ -25,6 +25,10 @@ cookie and does not expose the access token to page JavaScript or browser storag
 - Keep all project pages, APIs, previews, and Demo history behind authentication and the shared project ACL.
 - Managed projects are private by default. Add only already registered users, and revoke access when membership ends.
 - Cookie-authenticated mutations require the exact configured `PUBLIC_URL` Origin; CLI Bearer requests remain independent of browser cookies.
+- Keep the authoritative bundled project root, managed projects, SQLite database, and Demo history on a
+  dedicated private data volume outside the release tree. Use a dedicated non-root account and `UMask=0077`.
+- Use the templates in `deploy/` and require `npm run check:production` to pass through the service
+  `ExecStartPre` before every production start.
 
 ## Current validation boundary
 

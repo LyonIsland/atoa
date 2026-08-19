@@ -66,11 +66,11 @@
         <div class="kit-install" aria-label="ATOA Agent Kit installation">
           <div>
             <span class="kit-label">Linux / macOS</span>
-            <code>curl -fsSL https://YOUR_DOMAIN/agent-kit/install.sh | env ATOA_BASE_URL=https://YOUR_DOMAIN/agent-kit ATOA_ENDPOINT=https://YOUR_DOMAIN bash</code>
+            <code id="install-command-unix"></code>
           </div>
           <div>
             <span class="kit-label">Windows PowerShell</span>
-            <code>$env:ATOA_BASE_URL="https://YOUR_DOMAIN/agent-kit"; irm https://YOUR_DOMAIN/agent-kit/install.ps1 | iex</code>
+            <code id="install-command-powershell"></code>
           </div>
           <p>Requires Node.js 22 or newer. Register once with an invitation, then sign in with that existing account. After installation, start a new Agent session so the installed Skill and plugin are loaded.</p>
         </div>
@@ -277,5 +277,12 @@
       <span>Cloud hosted · Private sessions · Instant collaboration · Personal Agents</span>
     </footer>
   </div>
+  <script>
+    const atoaOrigin = location.origin;
+    document.getElementById('install-command-unix').textContent =
+      `curl -fsSL ${atoaOrigin}/agent-kit/install.sh | env ATOA_BASE_URL=${atoaOrigin}/agent-kit ATOA_ENDPOINT=${atoaOrigin} bash`;
+    document.getElementById('install-command-powershell').textContent =
+      `$env:ATOA_BASE_URL="${atoaOrigin}/agent-kit"; $env:ATOA_ENDPOINT="${atoaOrigin}"; irm ${atoaOrigin}/agent-kit/install.ps1 | iex`;
+  </script>
 </body>
 </html>

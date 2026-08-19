@@ -8,8 +8,9 @@
   },
   "scripts": {
     "start": "node server.js",
-    "test": "node --test cloud-projects/courseplanner/tests/app.test.js tests/sqlite-store.test.mjs tests/cloud-protocol.test.mjs",
+    "test": "node --test cloud-projects/courseplanner/tests/app.test.js tests/sqlite-store.test.mjs tests/production-config.test.mjs tests/cloud-protocol.test.mjs",
     "check:release": "node scripts/check-public-release.mjs",
+    "check:production": "node scripts/check-production-config.mjs",
     "verify": "node --check server.js && npm test && npm run check:release"
   },
   "dependencies": {

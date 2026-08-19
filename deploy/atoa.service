@@ -1,0 +1,26 @@
+[Unit]
+Description=ATOA collaborative coding server
+After=network.target
+
+[Service]
+Type=simple
+User=atoa
+Group=atoa
+WorkingDirectory=/opt/atoa/current
+EnvironmentFile=/etc/atoa/atoa.env
+ExecStartPre=/usr/bin/node /opt/atoa/current/scripts/check-production-config.mjs
+ExecStart=/usr/bin/node /opt/atoa/current/server.js
+Restart=on-failure
+RestartSec=3
+UMask=0077
+
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectHome=true
+ProtectSystem=strict
+ReadWritePaths=/var/lib/atoa
+RestrictSUIDSGID=true
+LockPersonality=true
+
+[Install]
+WantedBy=multi-user.target

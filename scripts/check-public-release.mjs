@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import fs from 'node:fs';
 import path from 'node:path';
+import { execFileSync } from 'node:child_process';
 
 const root = path.resolve(import.meta.dirname, '..');
 const failures = [];
@@ -25,6 +26,16 @@ if (JSON.stringify(projects) !== JSON.stringify(['courseplanner'])) {
 }
 
 const ignoredRoots = new Set(['.git', 'node_modules']);
+if (fs.existsSync(path.join(root, '.git'))) {
+  const trackedRuntimeData = execFileSync('git', ['ls-files', '--', 'data'], {
+    cwd: root,
+    encoding: 'utf8'
+  }).trim();
+  if (trackedRuntimeData) failures.push(`runtime data tracked by Git: ${trackedRuntimeData.split('\n').join(', ')}`);
+  // A development checkout may contain a protected, Git-ignored runtime volume.
+  // The release artifact is checked separately and must not contain this directory.
+  ignoredRoots.add('data');
+}
 const textExtensions = new Set([
   '', '.css', '.html', '.js', '.json', '.md', '.mjs', '.ps1', '.sh', '.txt', '.yaml', '.yml'
 ]);

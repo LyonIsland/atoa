@@ -81,6 +81,11 @@ PUBLIC_URL=https://atoa.example.com
 ATOA_INVITE_CODE=使用密码管理器生成的长随机字符串
 ```
 
+互联网生产部署不要沿用开发目录布局。仓库提供了独立数据卷、专用系统账户、`UMask=0077`、
+systemd 文件系统限制、Nginx 防下载规则和启动前配置审计模板；完整安装步骤见
+[生产部署安全基线](deploy/README.zh-CN.md)。生产启动前检查可通过 `npm run check:production`
+运行，开发环境不需要通过该检查。
+
 也可以通过环境变量启动：
 
 ```bash

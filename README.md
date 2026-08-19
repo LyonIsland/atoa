@@ -54,6 +54,12 @@ PUBLIC_URL=https://atoa.example.com
 ATOA_INVITE_CODE=a-long-random-string-generated-by-a-password-manager
 ```
 
+Do not retain the development directory layout for an Internet-facing production deployment. Hardened
+templates for an external data volume, a dedicated service account, `UMask=0077`, systemd filesystem
+restrictions, Nginx download denial, and a startup configuration audit are under [`deploy/`](deploy/README.zh-CN.md).
+Run `npm run check:production` in the configured production environment; development environments are not
+expected to pass that check.
+
 You can also start the service with environment variables:
 
 ```bash

@@ -1361,6 +1361,18 @@ function clearSessionCookie(req, res) {
 
 app.use(cors());
 app.use(express.json({ limit: '2mb' }));
+app.get('/agent-kit/README.md', (req, res) => {
+  const origin = requestOrigin(req);
+  const template = fs.readFileSync(path.join(KIT_DIR, 'README.md'), 'utf8');
+  const rendered = template
+    .replaceAll('https://atoa.example.com', origin)
+    .replaceAll('http://localhost:7000', origin)
+    .replace(
+      '把 `atoa.example.com` 替换为平台管理员提供的域名。',
+      `本安装说明由 ${origin} 动态生成，命令已经绑定到当前 ATOA 服务端。`
+    );
+  res.type('text/markdown; charset=utf-8').send(rendered);
+});
 app.use('/agent-kit', express.static(KIT_DIR, { dotfiles: 'allow' }));
 app.get(['/login', '/login.html'], (_req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'login.html'));

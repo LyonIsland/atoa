@@ -190,6 +190,16 @@ test('客户端 Agent 可以完成服务端委派、动态 Context、候选验�
     assert.doesNotMatch(philosophy, /From private intent|Core thesis/i);
     assert.doesNotMatch(philosophy, /Codex/i);
     assert.doesNotMatch(philosophy, /GitHub/);
+    assert.doesNotMatch(philosophy, /YOUR_DOMAIN/);
+    assert.match(philosophy, /ATOA_BASE_URL=\$\{atoaOrigin\}\/agent-kit/);
+    assert.match(philosophy, /ATOA_ENDPOINT=\$\{atoaOrigin\}/);
+
+    const agentKitReadme = await fetch(`${base}/agent-kit/README.md`).then(response => response.text());
+    const escapedBase = base.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    assert.match(agentKitReadme, new RegExp(`${escapedBase}/agent-kit/install\\.sh`));
+    assert.match(agentKitReadme, new RegExp(`ATOA_ENDPOINT=${escapedBase}`));
+    assert.doesNotMatch(agentKitReadme, /atoa\.example\.com|localhost:7000/);
+    assert.match(agentKitReadme, /动态生成，命令已经绑定到当前 ATOA 服务端/);
 
     await runCli(atoaHome, ['server', 'add', '--name', 'test', '--endpoint', base]);
     await runCli(atoaHome, ['server', 'use', '--name', 'test']);
